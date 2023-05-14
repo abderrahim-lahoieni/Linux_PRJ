@@ -19,9 +19,12 @@ return new class extends Migration
             $table->string('nom');
             $table->string('prenom');
             $table->date('date_naissance');
-            $table->foreignId('etablissement_id');
-            $table->foreignId('grade_id');
-            $table->foreignId('user_id');
+            $table->unsignedBigInteger('etablissement_id');
+            $table->unsignedBigInteger('grade_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('etablissement_id')->references('id')->on('etablissements');
+            $table->foreign('grade_id')->references('id')->on('grades');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

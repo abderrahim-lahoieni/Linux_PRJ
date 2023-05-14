@@ -22,8 +22,10 @@ return new class extends Migration
             $table->float('net');
             $table->string('annee_univ');
             $table->string('semestre');
-            $table->foreignId('enseignant_id');
-            $table->foreignId('etablissement_id');
+            $table->unsignedBigInteger('enseignant_id');
+            $table->unsignedBigInteger('etablissement_id');
+            $table->foreign('enseignant_id')->references('id')->on('enseignants');
+            $table->foreign('etablissement_id')->references('id')->on('etablissements');
             $table->timestamps();
         });
     }

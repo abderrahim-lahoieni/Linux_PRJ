@@ -18,8 +18,10 @@ return new class extends Migration
             $table->integer('ppr');//Numero national pour l'enseignant
             $table->string('nom');
             $table->string('prenom');
-            $table->foreignId('etablissement_id');
-            $table->foreignId('user_id');
+            $table->unsignedBigInteger('etablissement_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('etablissement_id')->references('id')->on('etablissements');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

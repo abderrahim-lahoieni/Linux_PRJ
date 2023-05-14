@@ -22,9 +22,11 @@ return new class extends Migration
             $table->date('date_debut');
             $table->date('date_fin');
             $table->integer('nbr_heures');
-            $table->foreignId('enseignant_id');
-            $table->foreignId('etablissement_id');
-            $table->integer('visa_etb');//
+            $table->unsignedBigInteger('enseignant_id');
+            $table->unsignedBigInteger('etablissement_id');
+            $table->foreign('enseignant_id')->references('id')->on('enseignants');
+            $table->foreign('etablissement_id')->references('id')->on('etablissements');
+            $table->integer('visa_etb');
             $table->integer('visa_uae');
             $table->timestamps();
         });

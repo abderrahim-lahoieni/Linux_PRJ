@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('etablissements', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
+            $table->string('code')->unique;
             $table->string('nom');
             $table->string('num_tel');
             $table->string('faxe');
-            $table->string('ville');
-            $table->integer('nbre_enseignants');
+            $table->string('ville')->default('tanger');;
+            $table->integer('nbre_enseignant')->default(0);;
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('administrateurs', function (Blueprint $table) {
             $table->id();
-            $table->integer('ppr');//Numero national pour l'enseignant
+            $table->integer('ppr')->unique;//Numero national pour l'enseignant
             $table->string('nom');
             $table->string('prenom');
             $table->unsignedBigInteger('etablissement_id');

@@ -10,19 +10,23 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        //Validate data coming from user
+        //Validate data coming from the user
         $fields = $request->validate([
             'name' => 'required | string',
             'email' => 'required | string |unique:users,email',
             'password' => 'required | string |confirmed',
-            'user_role' => 'required | string'
+            'type' => 'required | string'
         ]);
         $user = User::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
             'password' => $fields['password'],
+<<<<<<< HEAD
          
             
+=======
+            'type' => $fields['type']
+>>>>>>> b23299dedc9b3dedc5790f65c64ea79130eed039
         ]);
          // Récupération de l'établissement "Ecole National des sciences appliquées"
          $etablissement = Etablissement::where('nom',$request->nom_etablissement)->first();

@@ -22,9 +22,9 @@ return new class extends Migration
             $table->unsignedBigInteger('etablissement_id');
             $table->unsignedBigInteger('grade_id');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('etablissement_id')->references('id')->on('etablissements');
-            $table->foreign('grade_id')->references('id')->on('grades');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('etablissement_id')->references('id')->on('etablissements')->onDelete('cascade');
+            $table->foreign('grade_id')->references('id')->on('grades')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

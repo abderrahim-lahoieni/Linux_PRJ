@@ -17,13 +17,75 @@ class AuthController extends Controller
             'password' => 'required | string |confirmed',
             'user_role' => 'required | string'
         ]);
-
         $user = User::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
             'password' => $fields['password'],
-            'user_role' => $fields['user_role']
+         
+            
         ]);
+         // Récupération de l'établissement "Ecole National des sciences appliquées"
+         $etablissement = Etablissement::where('nom',$request->nom_etablissement)->first();
+         
+        
+        if($type=='Enseignant'){
+            $grade = Grade::where('nom',$request->designation)->first();
+            $Enseignant = Enseignant::create([
+                 // Récupération du grade "PA"
+                 
+                'name' => $fields['name'],
+                'prenom' => $fields['prenom'],
+                'ppr' => $fields['ppr'],
+                'email' => $fields['email'],
+                'date_naissance' => $fields['date_naissance'],
+                'id_user' => $user->id,
+                'id_etablissement'=> $etablissement->id,
+                'id_grade'=>$grade->id,
+            ]);
+        
+    }
+    if($type=='Presidant'){
+        $President = President::create([
+            'name' => $fields['name'],
+            'prenom' => $fields['prenom'],
+            
+            'email' => $fields['email'],
+            'date_naissance' => $fields['date_naissance'],
+            'id_user' => $user->id,
+            
+            
+        ]);
+    
+}
+if($type=='Administrateur_Etablissement'||$type=='directeur' ){
+    $Admin_Etab = Administrateur_Etablissement::create([
+        'name' => $fields['name'],
+        'prenom' => $fields['prenom'],
+        'ppr' => $fields['ppr'],
+        'email' => $fields['email'],
+        'date_naissance' => $fields['date_naissance'],
+        'id_user' => $user->id,
+        'id_etablissement'=> $etablissement->id,
+
+        
+    ]);
+    $directeur =directeur::create([
+        'name' => $fields['name'],
+        'prenom' => $fields['prenom'],
+        'ppr' => $fields['ppr'],
+        'email' => $fields['email'],
+        'date_naissance' => $fields['date_naissance'],
+        'id_user' => $user->id,
+        'id_etablissement'=> $etablissement->id,
+
+        
+    ]);
+
+}
+
+        
+
+    
 
         $token = $user->createToken('myapptoken')->plainTextToken;
 

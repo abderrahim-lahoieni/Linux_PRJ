@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('paiements', function (Blueprint $table) {
             $table->id();
-            $table->string('vh');
-            $table->integer('taux_h');
+            $table->string('vh'); //Volume horaire 
+            $table->integer('taux_h');//Taux Horaire
             $table->float('brut');
-            $table->float('ir');//impot sur revenue
+            $table->float('ir');//impot sur le revenue
             $table->float('net');
             $table->string('annee_univ');
             $table->string('semestre');

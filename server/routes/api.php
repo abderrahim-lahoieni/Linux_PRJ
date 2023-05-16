@@ -20,6 +20,7 @@ use App\Http\Controllers\AuthController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 //affichage d'un enseignant:
 Route::get('/enseignants/{id}', 'EnseignantController@show')->name('enseignants.show');
 Route::delete('/enseignants/{id}', 'EnseignantController@destroy')->name('enseignants.destroy');

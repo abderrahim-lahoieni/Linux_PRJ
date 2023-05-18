@@ -21,13 +21,13 @@ class AuthController extends Controller
             'name' => $fields['name'],
             'email' => $fields['email'],
             'password' => bcrypt($fields['password']),
-               'type' => $fields['type']
+            'type' => $fields['type'],
         ]);
-         /* // Récupération de l'établissement "Ecole National des sciences appliquées"
+        // Récupération de l'établissement "Ecole National des sciences appliquées"
          $etablissement = Etablissement::where('nom',$request->nom_etablissement)->first();
          
         
-        if($type=='Enseignant'){
+        if($fields['type']=='Enseignant'){
             $grade = Grade::where('nom',$request->designation)->first();
             $Enseignant = Enseignant::create([
                  // Récupération du grade "PA"
@@ -43,42 +43,20 @@ class AuthController extends Controller
             ]);
         
     }
-    if($type=='Presidant'){
-        $President = President::create([
+    if($fields['type']=='Presidant' ||$fields['type']=='Administrateur_universitaire' || $fields['type']=='Administrateur_Etablissement' || $fields['type']=='Directeur' ){
+        $Administrateur = Administrateur::create([
             'name' => $fields['name'],
             'prenom' => $fields['prenom'],
-            
+            'ppr'=>$fields['ppr'],
             'email' => $fields['email'],
-            'date_naissance' => $fields['date_naissance'],
+            
             'id_user' => $user->id,
             
             
         ]);
     
 }
-if($type=='Administrateur_Etablissement'||$type=='directeur' ){
-    $Admin_Etab = Administrateur_Etablissement::create([
-        'name' => $fields['name'],
-        'prenom' => $fields['prenom'],
-        'ppr' => $fields['ppr'],
-        'email' => $fields['email'],
-        'date_naissance' => $fields['date_naissance'],
-        'id_user' => $user->id,
-        'id_etablissement'=> $etablissement->id,
-
-        
-    ]);
-    $directeur =directeur::create([
-        'name' => $fields['name'],
-        'prenom' => $fields['prenom'],
-        'ppr' => $fields['ppr'],
-        'email' => $fields['email'],
-        'date_naissance' => $fields['date_naissance'],
-        'id_user' => $user->id,
-        'id_etablissement'=> $etablissement->id,
-
-        
-    ]); */
+ 
 
 
         $token = $user->createToken('myapptoken')->plainTextToken;

@@ -26,6 +26,14 @@ Route::get('/enseignants/{id}', 'EnseignantController@show')->name('enseignants.
 Route::delete('/enseignants/{id}', 'EnseignantController@destroy')->name('enseignants.destroy');
 
 
+
+
+//Public routes
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/login', [AuthController::class, 'login']);
+
+//Protected routes
+Route::group(['middleware' => ['auth:sanctum']],function(){
+    //Put your routes here, Just that's need from the user to be connected
+    Route::post('/logout', [AuthController::class, 'logout']);
+});

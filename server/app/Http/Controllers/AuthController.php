@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
+use  Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 //Controller for authenfication 
@@ -20,15 +20,10 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
-            'password' => $fields['password'],
-<<<<<<< HEAD
-         
-            
-=======
-            'type' => $fields['type']
->>>>>>> b23299dedc9b3dedc5790f65c64ea79130eed039
+            'password' => bcrypt($fields['password']),
+               'type' => $fields['type']
         ]);
-         // Récupération de l'établissement "Ecole National des sciences appliquées"
+         /* // Récupération de l'établissement "Ecole National des sciences appliquées"
          $etablissement = Etablissement::where('nom',$request->nom_etablissement)->first();
          
         
@@ -83,13 +78,8 @@ if($type=='Administrateur_Etablissement'||$type=='directeur' ){
         'id_etablissement'=> $etablissement->id,
 
         
-    ]);
+    ]); */
 
-}
-
-        
-
-    
 
         $token = $user->createToken('myapptoken')->plainTextToken;
 
@@ -112,7 +102,7 @@ if($type=='Administrateur_Etablissement'||$type=='directeur' ){
         $user = User::where('email', $fields['email'])->first();
 
         //check password
-        if (!$user || $fields['password'] != $user->password) {
+        if (!$user || !Hash::check($fields['password'] , $user->password)) {
             return response([
                 'message' => 'Bad request'
             ], 401);

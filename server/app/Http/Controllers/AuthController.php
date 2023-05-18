@@ -49,9 +49,8 @@ class AuthController extends Controller
             'prenom' => $fields['prenom'],
             'ppr'=>$fields['ppr'],
             'email' => $fields['email'],
-            
             'id_user' => $user->id,
-            
+            'id_etablissement'=> $etablissement->id,
             
         ]);
     

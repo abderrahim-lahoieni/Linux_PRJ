@@ -26,17 +26,29 @@ class EnseignantController extends Controller
     }
 
     //Create un enseignant
-    public function store(){
+    public function store(Request $request){
         //Validate data coming from user
     
-        /* $fields = $request->validate([
-            'name' => 'required | string',
-            'email' => 'required | string |unique:users,email',
-            'password' => 'required | string |confirmed',
-            'type' => 'required | string'
-        ]); */
+        $fields = $request->validate([
+            'ppr' => 'required | string',
+            'nom' => 'required | string ',
+            'prenom' => 'required | string ',
+            'date_naissance' => 'required | date',
+            'etablissement_id' => 'required ',
+            'grade_id' => 'required ',
+            'user_id' => 'required '
+        ]);
+        $enseignant = Enseignant::create([
+            'ppr' => $fields['ppr'],
+            'nom' => $fields['nom'],
+            'prenom' => $fields['password'],
+            'date_naissance' => $fields['date_naissance'],
+            'etablissement_id' => $fields['etablissement_id'],
+            'grade_id' => $fields['grade_id'],
+            'user_id' => $fields['user_id']
+        ]);
+        return $enseignant;
     }
-    
-      }
+}
 
 

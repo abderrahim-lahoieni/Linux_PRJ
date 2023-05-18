@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EnseignantController;
 use App\Http\Controllers\AuthController;
 
 /*
@@ -22,10 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 //affichage d'un enseignant:
-Route::get('/enseignants/{id}', 'EnseignantController@show')->name('enseignants.show');
-Route::delete('/enseignants/{id}', 'EnseignantController@destroy')->name('enseignants.destroy');
-
-
+Route::post('/enseignants/create',[EnseignantController::class,'store']);
+Route::get('/enseignants/{id}', [EnseignantController::class,'show'])->name('enseignants.show');
+Route::delete('/enseignants/{id}', [EnseignantController::class,'destroy'])->name('enseignants.destroy');
 
 
 //Public routes

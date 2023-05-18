@@ -36,7 +36,7 @@ class EnseignantController extends Controller
     }
     
         // Redirection vers une autre page ou retour d'une réponse JSON si vous utilisez une API
-    }
+    
 
     //Create un enseignant
     public function store(){
@@ -49,7 +49,6 @@ class EnseignantController extends Controller
             'type' => 'required | string'
         ]); */
     }
-    
-      }
+}
 
 

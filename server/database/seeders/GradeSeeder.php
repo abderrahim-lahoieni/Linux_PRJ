@@ -32,6 +32,22 @@ class GradeSeeder extends Seeder
             'charge_statutaire' => 190,
             'taux_horaire_vacation' => 390,
         ]);
+        //Peuplement de Hajar
+        Grade::create([
+            'designation' => 'PA',
+            'charge_statutaire' => 300,
+            'taux_horaire_vacation' => 240
+        ]);
+        Grade::create([
+            'designation' => 'PH',
+            'charge_statutaire' => 400,
+            'taux_horaire_vacation' => 200
+        ]);
+        Grade::create([
+            'designation' => 'PES',
+            'charge_statutaire' => 500,
+            'taux_horaire_vacation' => 190
+        ]);
 
         // Ajoutez d'autres enregistrements de grades si nécessaire
     }

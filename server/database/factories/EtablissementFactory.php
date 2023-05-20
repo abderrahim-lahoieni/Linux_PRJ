@@ -22,9 +22,9 @@ class EtablissementFactory extends Factory
             'code' => fake()->countryCode(),
             'nom' => fake()->name(),
             'num_tel' => fake()->phoneNumber(),
-            'faxe' => fake()->ean11(),
+            'faxe' => fake()->ean13(),
             'ville' => fake()->state(), 
-            'nbre_enseignants' => fake()->randomNumber()
+            'nbre_enseignant' => fake()->randomNumber()
         ];
     }
 }

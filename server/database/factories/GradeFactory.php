@@ -20,7 +20,7 @@ class GradeFactory extends Factory
     {
         return [
             'designation' => fake()->text(20),
-            'charge_staturaire' => fake()->numberBetween(0,200),
+            'charge_statutaire' => fake()->numberBetween(0,200),
             'taux_horaire_vacation' => fake()->numberBetween(0,200)
         ];
     }

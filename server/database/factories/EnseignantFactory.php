@@ -23,7 +23,7 @@ class EnseignantFactory extends Factory
     {
         return [
             'ppr' => fake()->unique()->randomNumber(), // unique because ppr it's unique for each teacher
-            'name' => fake()->name(),
+            'nom' => fake()->lastname(),
             'prenom' => fake()->firstName(),
             'date_naissance' => fake()->date('Y/m/d','now'),
             'etablissement_id' => Etablissement::inRandomOrder()->first()->id ,

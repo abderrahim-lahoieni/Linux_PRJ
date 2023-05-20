@@ -1,4 +1,5 @@
 <?php
+namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Grade;
 
@@ -11,6 +12,9 @@ class GradeSeeder extends Seeder
      */
     public function run()
     {
+        //Generate fake data
+        Grade::factory(10)->create();
+        
         // Exemple d'insertion de grades
         Grade::create([
             'designation' => 'PA',

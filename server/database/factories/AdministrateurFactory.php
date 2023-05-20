@@ -22,7 +22,7 @@ class AdministrateurFactory extends Factory
     {
         return [
             'ppr' => fake()->unique()->randomNumber(),
-            'name' => fake()->name(),
+            'nom' => fake()->lastname(),
             'prenom' => fake()->firstName(),
             'etablissement_id' => Etablissement::inRandomOrder()->first()->id,
             'user_id' => User::inRandomOrder()->first()->id

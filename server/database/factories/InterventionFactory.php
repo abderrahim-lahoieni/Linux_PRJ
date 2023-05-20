@@ -23,9 +23,8 @@ class InterventionFactory extends Factory
     {
         return [
             'intitule_intervention' => fake()->text(20),
-            'annee_univ' => fake()->year($max = 'now')  ,
-            'email_verified_at' => now(),
-            'semestre' => fake()->numerify('Hello #'), 
+            'annee__univ' => fake()->year($max = 'now') ,
+            'semestre' => fake()->numerify('S#'), 
             'date_debut' => fake()->date($format = 'Y/m/d', $max = 'now') ,
             'date_fin' => fake()->date($format = 'Y/m/d', $max = 'now') ,
             'nbr_heures' => fake()->numberBetween($min = 100, $max = 250),

@@ -14,6 +14,6 @@ class Etablissement extends Model
         'num_tel',
         'faxe',
         'ville',
-        'nbre_enseignants'
+        'nbre_enseignant'
     ];
 }

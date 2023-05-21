@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EnseignantController;
+use App\Http\Controllers\EtablissementController;
 use App\Http\Controllers\AuthController;
 
 /*
@@ -21,6 +22,14 @@ use App\Http\Controllers\AuthController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+//Etablissement
+Route::get('/etablissements', [EtablissementController::class,'index']);
+Route::post('/etablissements/create', [EtablissementController::class,'store']);
+Route::post('/etablissements/edit/{id}', [EtablissementController::class,'update']);
+Route::delete('/etablissements/{etablissement}', [EtablissementController::class,'delete']);
+Route::get('/etablissements/{id}', [EtablissementController::class,'show']);
+
 
 //affichage d'un enseignant:
 Route::post('/enseignants/create',[EnseignantController::class,'store']);

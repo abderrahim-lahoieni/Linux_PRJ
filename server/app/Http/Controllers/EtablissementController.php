@@ -15,9 +15,32 @@ class EtablissementController extends Controller
      */
 
     //Affichage le contenu des tous les etablissements
-    public function index()
-    {
-        return Etablissement::all();
+    public function index(Request $request)
+    {   
+        try{
+            //Pour faire la pagination si on a plusieurs enregistrements dans la table entreprises
+            $query = Etablissement::query();
+            $perPage = 1;
+            $page = $request->input('page',1);
+            $search = $request->input('search');
+
+            if($search){
+                $query->whereRaw("code LIKE '%".$search."%'");
+            }
+
+            $total = $query->count();
+
+            $result = $query->offset(($page -1) * $perPage)->limit($perPage)->get();
+            return response()->json([
+                'status_code' => 200,
+                'status_message' => 'Les établissements ont été récupérées avec succès',
+                'current_page' => $page ,
+                'last_page' => ceil($total / $perPage),
+                'items' => $result
+            ]);
+        }catch(Exception $e){
+            return response()->json($e);
+        }
     }
 
     /**
@@ -25,7 +48,7 @@ class EtablissementController extends Controller
      */
     public function create()
     {
-        $etab = new Etablissement();
+        
     }
 
     /**
@@ -67,6 +90,17 @@ class EtablissementController extends Controller
     public function show($id)
     {
 
+        try{
+            $etab =Etablissement::find($id);
+
+            return response()->json([
+                'status_code' => 201,
+                'status_message' => 'L etablissement est bien trouvée avec succès',
+                'data' => $etab
+            ]);
+        }catch(Exception $e){
+                return response()->json($e);
+        }
     }
 
     /**
@@ -98,7 +132,7 @@ class EtablissementController extends Controller
 
             return response()->json([
                 'status_code' => 201,
-                'status_message' => 'L etablissement est edité avec succès',
+                'status_message' => 'L etablissement est editée avec succès',
                 'data' => $etab
             ]);
 
@@ -110,8 +144,17 @@ class EtablissementController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Etablissement $etablissement)
+    public function delete(Etablissement $etablissement)
     {
-        //
+            try{
+                $etablissement->delete();
+                return response()->json([
+                'status_code' => 200,
+                'status_message' => 'L etablissement est supprimée avec succès',
+                'data' => $etablissement
+                ]);
+            }catch(Exception $e){
+                return response()->json($e);
+            }
     }
 }

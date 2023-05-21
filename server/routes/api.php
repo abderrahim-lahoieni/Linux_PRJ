@@ -27,6 +27,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/etablissements', [EtablissementController::class,'index']);
 Route::post('/etablissements/create', [EtablissementController::class,'store']);
 Route::post('/etablissements/edit/{id}', [EtablissementController::class,'update']);
+Route::delete('/etablissements/{etablissement}', [EtablissementController::class,'delete']);
+Route::get('/etablissements/{id}', [EtablissementController::class,'show']);
 
 
 //affichage d'un enseignant:

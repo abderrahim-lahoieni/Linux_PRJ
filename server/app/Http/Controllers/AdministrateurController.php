@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Administrateur;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Etablissement;
 
 class AdministrateurController extends Controller
 {
@@ -12,7 +14,11 @@ class AdministrateurController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            'status_code' => 201,
+                'items' => Administrateur::all()
+            ]);
+
     }
 
     /**
@@ -28,15 +34,53 @@ class AdministrateurController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        //Validate data coming from the user
+        $fields = $request->validate([
+            'nom' => 'required | string',
+            'prenom' => 'required | string',
+            'ppr' => 'required | string',
+            'email' => 'required | string |unique:users,email',
+            'password' => 'required | string |confirmed',
+            'nom_etablissement' => 'required | string',
+            'type' => 'required | string',  //Type faut qu'il faut DIRECTEUR,ADMINISTRATEUR_ETA
+        ]);
+        $user = User::create([
+            'name' => $fields['nom'],
+            'email' => $fields['email'],
+            'password' => bcrypt($fields['password']),
+            'type' => $fields['type']
+        ]);
+        
+            $etablissement = Etablissement::where('nom', $fields['nom_etablissement'])->first();
+            $id = $etablissement->id;
+
+            $Administrateur = Administrateur::create([
+                'nom' => $fields['nom'],
+                'prenom' => $fields['prenom'],
+                'ppr' => $fields['ppr'],
+
+                'etablissement_id' => $id,
+                'user_id' => $user->id
+            ]);
+            return response()->json([
+                'status_code' => 200,
+                'items' => $Administrateur
+            ]);
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Administrateur $administrateur)
+    public function show($id)
     {
-        //
+        $admin = Administrateur::find($id);
+        
+        return response()->json([
+            'status_code' => 200,
+            'items' => $admin
+        ]); 
     }
 
     /**
@@ -52,14 +96,57 @@ class AdministrateurController extends Controller
      */
     public function update(Request $request, Administrateur $administrateur)
     {
-        //
+        
+        //Validate data coming from the user
+        $fields = $request->validate([
+            'nom' => 'required | string',
+            'prenom' => 'required | string',
+            'ppr' => 'required | string',
+            'email' => 'required | string |unique:users,email',
+            'password' => 'required | string |confirmed'  //Type faut qu'il faut DIRECTEUR,ADMINISTRATEUR_ETA
+        ]);
+        $user = User::create([
+            $administrateur->nom => $fields['nom'],
+            $administrateur->email  => $fields['email'],
+            $administrateur->password  => bcrypt($fields['password']),
+            $administrateur->type  => $fields['type']
+        ]);
+        
+            $etablissement = Etablissement::where('nom', $fields['nom_etablissement'])->first();
+            $id = $etablissement->id;
+
+            $Administrateur = Administrateur::create([
+                'nom' => $fields['nom'],
+                'prenom' => $fields['prenom'],
+                'ppr' => $fields['ppr'],
+
+                'etablissement_id' => $id,
+                'user_id' => $user->id
+            ]);
+            return response()->json([
+                'status_code' => 200,
+                'items' => $Administrateur
+            ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Administrateur $administrateur)
+    public function destroy($id)
     {
-        //
+        $admin = Administrateur::find($id);
+        // Supprimez l'enseignant de la table "enseignant"
+        $admin->delete();
+        
+        // Supprimez également l'utilisateur associé de la table "users"
+        //Trigger 
+        $user = $admin->user_id;
+        $user1 = User::where('id', $user)->first();
+        $user1->delete();
+        
+        return response()->json([
+            'status_code' => 201 ,
+            'success' => 'L\'enseignant est supprimé avec succès'
+        ]);
     }
 }

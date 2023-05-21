@@ -12,7 +12,12 @@ class GradeController extends Controller
      */
     public function index()
     {
-        //
+            return response()->json([
+                'status_code' => 200,
+                'status_message' => 'Les grades ont été récupérées avec succès',
+                'items' => Grade::all()
+            ]);
+       
     }
 
     /**

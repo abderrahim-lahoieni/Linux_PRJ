@@ -4,57 +4,93 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use  Illuminate\Support\Facades\Hash;
 use App\Models\User;
-
+use App\Models\Enseignant;
+use App\Models\Administrateur;
+use App\Models\Grade;
 //Controller for authenfication 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+   /*  public function register_Enseignant(Request $request)
     {
         //Validate data coming from the user
         $fields = $request->validate([
-            'name' => 'required | string',
+            'nom' => 'required | string',
+            'prenom' => 'required | string',
+            'ppr' => 'required | string',
+            
+            'date_naissance'=>'required | string',
+            'telephone' => 'required | integer',
             'email' => 'required | string |unique:users,email',
             'password' => 'required | string |confirmed',
-            'type' => 'required | string'
+            'nom_etablissement' => 'required | string',
+            'designation'=>'required | string',
+           
         ]);
         $user = User::create([
-            'name' => $fields['name'],
             'email' => $fields['email'],
             'password' => bcrypt($fields['password']),
-            'type' => $fields['type'],
+            'type' => 'Enseignant',
         ]);
-        // Récupération de l'établissement "Ecole National des sciences appliquées"
-         $etablissement = Etablissement::where('nom',$request->nom_etablissement)->first();
-         
-        
-        if($fields['type']=='Enseignant'){
-            $grade = Grade::where('nom',$request->designation)->first();
-            $Enseignant = Enseignant::create([
-                 // Récupération du grade "PA"
-                 
-                'name' => $fields['name'],
-                'prenom' => $fields['prenom'],
-                'ppr' => $fields['ppr'],
-                'email' => $fields['email'],
-                'date_naissance' => $fields['date_naissance'],
-                'id_user' => $user->id,
-                'id_etablissement'=> $etablissement->id,
-                'id_grade'=>$grade->id,
-            ]);
-        
-    }
-    if($fields['type']=='Presidant' ||$fields['type']=='Administrateur_universitaire' || $fields['type']=='Administrateur_Etablissement' || $fields['type']=='Directeur' ){
-        $Administrateur = Administrateur::create([
-            'name' => $fields['name'],
-            'prenom' => $fields['prenom'],
-            'ppr'=>$fields['ppr'],
-            'email' => $fields['email'],
-            'id_user' => $user->id,
-            'id_etablissement'=> $etablissement->id,
+        $etablissement = Etablissement::where('nom', $request['nom_etablissement'])->first();
+        $id = $etablissement->id;
+        $grade = Grade::where('designation', $request['designation'])->first();
+        $id_grade = $grade->id;
+        $Enseignant = Enseignant::create([
+            'nom' => 'required | string',
+            'prenom' => 'required | string',
+            'ppr' => 'required | string',
             
+            'date_naissance'=>'required | string',
+            'telephone' => 'required | integer',
+            'id_etablissement'=>$id_etablissement,
+           
+            'id_grad'=>$id_grade,
+            'id_user'=>$user['id'],
         ]);
+
+        $token = $user->createToken('myapptoken')->plainTextToken;
+
+        $response = [
+            'user' => $user,
+            'token' => $token
+        ];
+        return response($response, 201);
+    } */
+     public function register_Administrateur(Request $request)
+    {
+   //Validate data coming from the user
+        $fields = $request->validate([
+            'nom' => 'required | string',
+            'prenom' => 'required | string',
+            'ppr' => 'required | string',
+            'email' => 'required | string |unique:users,email',
+            'password' => 'required | string |confirmed',
+            'nom_etablissement' => 'required | string',
+            'type' => 'required | string',
+        ]);
+        $user = User::create([
+            'email' => $fields['email'],
+            'password' => bcrypt($fields['password']),
+            'type' => $request['type'],
+        ]);
+        if( $request['type']=='Adiministrateur_Etblissement'||$request['type']=='directeur' ){
+            $etablissement = Etablissement::where('nom', $request['nom_etablissement'])->first();
+            $id = $etablissement->id;
+            
+ $Administrateur =Administrateur::create([
+            'nom' => 'required | string',
+            'prenom' => 'required | string',
+            'ppr' => 'required | string',
+            
+            'date_naissance'=>'required | string',
+            'telephone' => 'required | integer',
+            'id_etablissement'=>$id,
+           
+        
+            'id_user'=>$user['id'],
+        ]);}
     
-}
+
  
 
 
@@ -66,7 +102,7 @@ class AuthController extends Controller
         ];
         return response($response, 201);
     }
-
+    
     public function login(Request $request)
     {
         //Validate data coming from user
@@ -102,6 +138,6 @@ class AuthController extends Controller
 
         return [
             'message' => 'Logged out'
-        ];
-    }
+              ];
+    }
 }

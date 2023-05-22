@@ -33,6 +33,8 @@ Route::delete('/administrateurs/{id}', [AdministrateurController::class,'destroy
 
 //-------Grade-----------
 Route::get('/grades', [GradeController::class,'index']);
+Route::get('/grades/{id}', [GradeController::class,'show']);
+Route::post('/grades/create', [GradeController::class,'store']);
 
 //--------Etablissement----------
 
@@ -41,7 +43,7 @@ Route::get('/etablissements', [EtablissementController::class,'index']);
 //Creation d'une etablissement
 Route::post('/etablissements/create', [EtablissementController::class,'store']);
 //Modification d'une etablissement
-Route::post('/etablissements/edit/{id}', [EtablissementController::class,'update']);
+Route::post('/etablissements/{id}/edit', [EtablissementController::class,'update']);
 //Suppression d'une etablissement
 Route::delete('/etablissements/{etablissement}', [EtablissementController::class,'delete']);
 //Affichage d'une etablissement

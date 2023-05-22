@@ -10,53 +10,8 @@ use App\Models\Grade;
 //Controller for authenfication 
 class AuthController extends Controller
 {
-   /*  public function register_Enseignant(Request $request)
-    {
-        //Validate data coming from the user
-        $fields = $request->validate([
-            'nom' => 'required | string',
-            'prenom' => 'required | string',
-            'ppr' => 'required | string',
-            
-            'date_naissance'=>'required | string',
-            'telephone' => 'required | integer',
-            'email' => 'required | string |unique:users,email',
-            'password' => 'required | string |confirmed',
-            'nom_etablissement' => 'required | string',
-            'designation'=>'required | string',
-           
-        ]);
-        $user = User::create([
-            'email' => $fields['email'],
-            'password' => bcrypt($fields['password']),
-            'type' => 'Enseignant',
-        ]);
-        $etablissement = Etablissement::where('nom', $request['nom_etablissement'])->first();
-        $id = $etablissement->id;
-        $grade = Grade::where('designation', $request['designation'])->first();
-        $id_grade = $grade->id;
-        $Enseignant = Enseignant::create([
-            'nom' => 'required | string',
-            'prenom' => 'required | string',
-            'ppr' => 'required | string',
-            
-            'date_naissance'=>'required | string',
-            'telephone' => 'required | integer',
-            'id_etablissement'=>$id_etablissement,
-           
-            'id_grad'=>$id_grade,
-            'id_user'=>$user['id'],
-        ]);
-
-        $token = $user->createToken('myapptoken')->plainTextToken;
-
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
-        return response($response, 201);
-    } */
-     public function register_Administrateur(Request $request)
+    
+     /* public function register_Administrateur(Request $request)
     {
    //Validate data coming from the user
         $fields = $request->validate([
@@ -77,7 +32,7 @@ class AuthController extends Controller
             $etablissement = Etablissement::where('nom', $request['nom_etablissement'])->first();
             $id = $etablissement->id;
             
- $Administrateur =Administrateur::create([
+        $Administrateur =Administrateur::create([
             'nom' => 'required | string',
             'prenom' => 'required | string',
             'ppr' => 'required | string',
@@ -88,7 +43,7 @@ class AuthController extends Controller
            
         
             'id_user'=>$user['id'],
-        ]);}
+        ]);} 
     
 
  
@@ -101,7 +56,7 @@ class AuthController extends Controller
             'token' => $token
         ];
         return response($response, 201);
-    }
+    }*/
     
     public function login(Request $request)
     {
@@ -137,7 +92,7 @@ class AuthController extends Controller
         auth()->user()->tokens()->delete();
 
         return [
-            'message' => 'Logged out'
-              ];
-    }
+            'message' => 'Logged out'        
+        ];
+    }
 }

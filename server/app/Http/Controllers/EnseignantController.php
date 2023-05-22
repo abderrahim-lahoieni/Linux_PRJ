@@ -7,6 +7,8 @@ use App\Models\Grade;
 use App\Models\Enseignant;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\EditEtablissementRequest;
+use Exception;
 
 class EnseignantController extends Controller
 {
@@ -87,29 +89,32 @@ class EnseignantController extends Controller
         return response()->json([
             'items' => $Enseignant
         ]);
+    }
+        public function update(EditEtablissementRequest $request,$id)
+    {
+        try {
 
-   /*  public function store(Request $request){
-        
-        $fields = $request->validate([
-            'ppr' => 'required | string',
-            'nom' => 'required | string ',
-            'prenom' => 'required | string ',
-            'date_naissance' => 'required | date',
-            'etablissement_id' => 'required ',
-            'grade_id' => 'required ',
-            'user_id' => 'required '
-        ]);
-        $enseignant = Enseignant::create([
-            'ppr' => $fields['ppr'],
-            'nom' => $fields['nom'],
-            'prenom' => $fields['password'],
-            'date_naissance' => $fields['date_naissance'],
-            'etablissement_id' => $fields['etablissement_id'],
-            'grade_id' => $fields['grade_id'],
-            'user_id' => $fields['user_id']
-        ]);
-        return $enseignant;
-    } */
-}
+            //Chercher l'enregistrement avec id passée par l'utilisateur
+            $etab = Etablissement::find($id);
+
+            $etab->code = $request->code;
+            $etab->nom = $request->nom;
+            $etab->num_tel = $request->num_tel;
+            $etab->faxe = $request->faxe;
+            $etab->ville = $request->ville;
+            $etab->nbre_enseignant = $request->nbre_enseignant;
+
+            $etab->save(); //Enregistrement de nouvelles valeurs
+
+            return response()->json([
+                'status_code' => 201,
+                'status_message' => 'L etablissement est editée avec succès',
+                'data' => $etab
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
 }
 

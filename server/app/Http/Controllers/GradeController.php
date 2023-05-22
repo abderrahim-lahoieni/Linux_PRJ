@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Grade;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreGradeRequest;
+use Exception;
 
 class GradeController extends Controller
 {
@@ -31,18 +33,42 @@ class GradeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreGradeRequest $request)
     {
-        //
+        $grade = new Grade();
+        
+        $grade->designation = $request->designation;
+        $grade->charge_statutaire = $request->charge_statutaire;
+        $grade->taux_horaire_vacation = $request->taux_horaire_vacation;
+
+        $grade->save();
+
+        return response()->json([
+            'status_code' => 201,
+            'status_message' => 'Le grade est ajouté avec succès',
+            'data' => $grade
+        ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Grade $grade)
-    {
-        //
+    public function show($id){
+       
+        try{
+            $grade =Grade::find($id);
+
+            return response()->json([
+                'status_code' => 201,
+                'status_message' => 'Le grade est bien trouvée avec succès',
+                'data' => $grade
+            ]);
+        }catch(Exception $e){
+                return response()->json($e);
+        }
+        
     }
+        
 
     /**
      * Show the form for editing the specified resource.
@@ -55,9 +81,28 @@ class GradeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Grade $grade)
-    {
-        //
+    public function update(Request $request, $id)
+    {   
+        try {
+
+            //Chercher l'enregistrement avec id passée par l'utilisateur
+            $grade = Grade::find($id);
+
+            $grade->designation = $request->designation;
+            $grade->charge_statutaire = $request->charge_statutaire;
+            $grade->taux_horaire_vacation = $request->taux_horaire_vacation;
+
+            $grade->save(); //Enregistrement de nouvelles valeurs
+
+            return response()->json([
+                'status_code' => 201,
+                'status_message' => 'L gradelissement est editée avec succès',
+                'data' => $grade
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
     }
 
     /**

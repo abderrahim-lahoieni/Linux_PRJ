@@ -6,6 +6,7 @@ use App\Models\Administrateur;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Etablissement;
+use Exception;
 
 class AdministrateurController extends Controller
 {

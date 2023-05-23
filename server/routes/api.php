@@ -35,6 +35,7 @@ Route::delete('/administrateurs/{id}', [AdministrateurController::class,'destroy
 Route::get('/grades', [GradeController::class,'index']);
 Route::get('/grades/{id}', [GradeController::class,'show']);
 Route::post('/grades/create', [GradeController::class,'store']);
+Route::post('/grades/{id}/edit', [GradeController::class,'update']);
 
 //--------Etablissement----------
 

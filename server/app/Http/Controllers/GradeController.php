@@ -96,7 +96,7 @@ class GradeController extends Controller
 
             return response()->json([
                 'status_code' => 201,
-                'status_message' => 'L gradelissement est editée avec succès',
+                'status_message' => 'Le grade est edité avec succès',
                 'data' => $grade
             ]);
 
@@ -108,8 +108,18 @@ class GradeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Grade $grade)
+    public function destroy($id)
     {
-        //
+        try{
+            $grade=Grade::find($id);
+            $grade->delete();
+            return response()->json([
+            'status_code' => 200,
+            'status_message' => 'L etablissement est supprimée avec succès',
+            'data' => $grade
+            ]);
+        }catch(Exception $e){
+            return response()->json($e);
+        }
     }
 }

@@ -6,106 +6,163 @@ use App\Models\Intervention;
 use App\Models\Etablissement;
 use App\Models\Enseignant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class InterventionController extends Controller
 {
     public function getAllInterventions_By_President()
     {
-        $interventions = Intervention::where('validation_Etablissement', 1)
-            ->get(['id', 'intitule_intervention', 'Annee_univ', 'Semestre', 'Date_debut', 'Date_fin', 'Nbr_heures', 'validation_Etablissement', 'validation_universitaire']);
-        ;
+        $interventions = Intervention::where('visa_etb', 1)
+            ->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
 
 
+        return response()->json([
+            'status_code' => 200,
+            'status_message' => 'les interventions de l\'université ont été récupérés',
+            'data' => $interventions
+        ]);
     }
+
     public function getInterventionsByEtablissement_By_President($id_etablissement)
     {
-        $interventions = Intervention::where('validation_Etablissement', 1)
-            ->where('id_etablissement', $id_etablissement)->get(['id', 'intitule_intervention', 'Annee_univ', 'Semestre', 'Date_debut', 'Date_fin', 'Nbr_heures', 'validation_Etablissement', 'validation_universitaire']);
-        ;
-
+        $interventions = Intervention::where('visa_etb', 1)
+            ->where('etablissement_id', $id_etablissement)->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+        return response()->json([
+            'status_code' => 200,
+            'status_message' => 'les interventions de l\'université ont été récupérés',
+            'data' => $interventions
+        ]);
 
     }
-    public function getInterventionsByProfesseur_By_President($id_professeur)
+
+    public function getInterventionsByenseignant_By_President($id_enseignant)
     {
-        $interventions = Intervention::where('validation_Etablissement', 1)
-            ->where('id_intervenant', $id_professeur)->get(['id', 'intitule_intervention', 'Annee_univ', 'Semestre', 'Date_debut', 'Date_fin', 'Nbr_heures', 'validation_Etablissement', 'validation_universitaire']);
-
+        $interventions = Intervention::where('visa_etb', 1)
+            ->where('enseignant_id', $id_enseignant)->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures', 'enseignant_id']);
+        return response()->json([
+            'status_code' => 200,
+            'status_message' => 'les interventions de l\'université ont été récupérés',
+            'data' => $interventions
+        ]);
     }
+
     public function getInterventionsByAnnee_By_President($anneeUniversitaire)
     {
-        $interventions = Intervention::where('validation_Etablissement', 1)
-            ->where('Annee_univ', $anneeUniversitaire)->get(['id', 'intitule_intervention', 'Annee_univ', 'Semestre', 'Date_debut', 'Date_fin', 'Nbr_heures', 'validation_Etablissement', 'validation_universitaire']);
-
+        $interventions = Intervention::where('visa_etb', 1)
+            ->where('annee__univ', $anneeUniversitaire)->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+        return response()->json([
+            'status_code' => 200,
+            'status_message' => 'les interventions de l\'université ont été récupérés',
+            'data' => $interventions
+        ]);
 
     }
-    public function getAllInterventions_By_Enseignant(Request $request)
+    /* public function getAllInterventions_By_Enseignant()
+    {
+        $userID = auth()->user()->id;
+
+        // Récupérer le enseignant en utilisant le code de connexion
+
+        $interventions = Intervention::where('enseignant_id', $userID)
+            ->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures', 'visa_etb', 'visa_uae']);
+
+        return response()->json([
+            'status_code' => 200,
+            'status_message' => 'les interventions de l\'université ont été récupérés',
+            'data' => $userID
+        ]);
+
+    } */
+    public function getAllInterventions_By_Enseignant()
+    {
+        // Vérifier si l'utilisateur est authentifié
+        if (auth()->check()) {
+            $userID = auth()->user()->id;
+
+            // Récupérer l'enseignant en utilisant l'ID de l'utilisateur connecté
+            $enseignant = Enseignant::where('user_id', $userID)->first();
+
+            if (!$enseignant) {
+                return response()->json([
+                    'status_code' => 404,
+                    'status_message' => 'Enseignant introuvable',
+                    'data' => null
+                ]);
+            }
+
+            // Récupérer les interventions de l'enseignant
+            $interventions = Intervention::where('enseignant_id', $enseignant->id)
+                ->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures', 'visa_etb', 'visa_uae']);
+
+            return response()->json([
+                'status_code' => 200,
+                'status_message' => 'Les interventions de l\'enseignant ont été récupérées',
+                'data' => $interventions
+            ]);
+        } else {
+            return response()->json([
+                'status_code' => 401,
+                'status_message' => 'Utilisateur non authentifié',
+                'data' => null
+            ]);
+        }
+    }
+
+    /* public function getInterventionsByEtablissement_By_Enseignant(Request $request, $id_etablissement)
     {
         $professorCode = $request['id'];
 
-        // Récupérer le professeur en utilisant le code de connexion
-        $professeur = Professor::where('code', $professorCode)->first();
-        $id_professeur = $professeur->id;
+        // Récupérer le enseignant en utilisant le code de connexion
+        $enseignant = Professor::where('id', $professorCode)->first();
+        $id_enseignant = $enseignant->id;
         $interventions = Intervention::where('validation_Etablissement', 0)
-            ->where('id_intervenant', $id_professeur)
-            ->get(['id', 'intitule_intervention', 'Annee_univ', 'Semestre', 'Date_debut', 'Date_fin', 'Nbr_heures']);
-        ;
-
-    }
-    public function getInterventionsByEtablissement_By_Enseignant(Request $request, $id_etablissement)
-    {
-        $professorCode = $request['id'];
-
-        // Récupérer le professeur en utilisant le code de connexion
-        $professeur = Professor::where('id', $professorCode)->first();
-        $id_professeur = $professeur->id;
-        $interventions = Intervention::where('validation_Etablissement', 0)
-            ->where('id_intervenant', $id_professeur)
+            ->where('id_intervenant', $id_enseignant)
             ->where('id_etablissement', $id_etablissement)->get(['id', 'intitule_intervention', 'Annee_univ', 'Semestre', 'Date_debut', 'Date_fin', 'Nbr_heures']);
         ;
 
 
-    }
-    public function getInterventionsByAnnee_By_Enseignant($anneeUniversitaire, Request $request)
+    } */
+    /* public function getInterventionsByAnnee_By_Enseignant($anneeUniversitaire, Request $request)
     {
         $professorCode = $request['id'];
 
-        // Récupérer le professeur en utilisant le code de connexion
-        $professeur = Professor::where('id', $professorCode)->first();
-        $id_professeur = $professeur->id;
+        // Récupérer le enseignant en utilisant le code de connexion
+        $enseignant = Professor::where('id', $professorCode)->first();
+        $id_enseignant = $enseignant->id;
         $interventions = Intervention::where('validation_Etablissement', 0)
-            ->where('id_intervenant', $id_professeur)
+            ->where('id_intervenant', $id_enseignant)
             ->where('Annee_univ', $anneeUniversitaire)->get(['id', 'intitule_intervention', 'Annee_univ', 'Semestre', 'Date_debut', 'Date_fin', 'Nbr_heures']);
         ;
 
 
-    }
-    public function getAllInterventions_By_Directeur(Request $request)
+    } */
+    /* public function getAllInterventions_By_Directeur(Request $request)
     {
         $directeurcode = $request['id'];
 
-        // Récupérer le professeur en utilisant le code de connexion
+        // Récupérer le enseignant en utilisant le code de connexion
         $directeur = Professor::where('id', $directeurcode)->first();
         $id_etablissement = $directeur->id_etablissement;
         $interventions = Intervention::where('id_Etablissement', $id_etablissement)
             ->get(['id', 'intitule_intervention', 'Annee_univ', 'Semestre', 'Date_debut', 'Date_fin', 'Nbr_heures', 'validation_Etablissement']);
 
-    }
-    public function getInterventionsByProfesseur_By_Directeur(Request $request, $id_professeur)
+    } */
+    /* public function getInterventionsByenseignant_By_Directeur(Request $request, $id_enseignant)
     {
         $directeurcode = $request['id'];
 
-        // Récupérer le professeur en utilisant le code de connexion
+        // Récupérer le enseignant en utilisant le code de connexion
         $directeur = Professor::where('id', $directeurcode)->first();
         $id_etablissement = $directeur->id_etablissement;
         $interventions = Intervention::where('id_Etablissement', $id_etablissement)
-            ->where('id_intervenant', $id_professeur)->get(['id', 'intitule_intervention', 'Annee_univ', 'Semestre', 'Date_debut', 'Date_fin', 'Nbr_heures', 'validation_Etablissement']);
+            ->where('id_intervenant', $id_enseignant)->get(['id', 'intitule_intervention', 'Annee_univ', 'Semestre', 'Date_debut', 'Date_fin', 'Nbr_heures', 'validation_Etablissement']);
 
-    }
-    public function getInterventionsByAnnee_By_Directeur(Request $request, $anneeUniversitaire)
+    } */
+    /* public function getInterventionsByAnnee_By_Directeur(Request $request, $anneeUniversitaire)
     {
         $directeurcode = $request['id'];
 
-        // Récupérer le professeur en utilisant le code de connexion
+        // Récupérer le enseignant en utilisant le code de connexion
         $directeur = Professor::where('id', $directeurcode)->first();
         $id_etablissement = $directeur->id_etablissement;
         $interventions = Intervention::Intervention::where('id_Etablissement', $id_etablissement)
@@ -113,7 +170,7 @@ class InterventionController extends Controller
 
 
 
-    }
+    } */
     public function store(Request $request)
     {
         $data = $request->validate([

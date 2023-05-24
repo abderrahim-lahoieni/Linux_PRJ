@@ -26,7 +26,15 @@ Date_Naissance  date,
 Etablissement   INTEGER references etablissements(id) ,
 id_Grade        INTEGER references grades(id_Grade) ,
 id_User         Integer references users(id_User)
+
 );
+
+-----modification table enseignant
+ALTER TABLE enseignants
+ADD COLUMN etat INTEGER DEFAULT 1 CHECK (etat IN (0, 1));
+-----pardefaut 0
+ALTER TABLE enseignants
+ALTER COLUMN etat SET DEFAULT 1;
 
 create table users(
 id_User    INTEGER  primary key not null  ,
@@ -54,6 +62,9 @@ add constraint nbr_ens_positif  check (Nbr_enseignants >= 0);
 
 ALTER COLUMN Nbr_heures SET DEFAULT 0;
 
+ALTER TABLE interventions
+  ADD COLUMN Visa_etb boolean default false,
+ADD COLUMN Visa_uae  boolean default  false ;
 
 ---creation table paiement----
 
@@ -73,14 +84,9 @@ Semestre           char(2));
 ALTER Table interventions
 add constraint annee_uv  check (Annee_univ >= 1989 and Annee_univ<9999);
 -----ajout des nouvelle colonnne---
-ALTER TABLE interventions
-  ADD COLUMN Visa_etb INTEGER default 0,
-ADD COLUMN Visa_uae  INTEGER default 0 ;
 
-------doha confirmation----
--- ALTER TABLE interventions
---   ADD COLUMN Visa_etb boolean default false,
--- ADD COLUMN Visa_uae  boolean default  false ;
+
+
 
 
 
@@ -174,11 +180,15 @@ values (14,14,'Faculté des sciences juridiques économiques et sociales'
 ,'+212 539687086','','Tetouan-Martil');
 
 -------------grades
+-------------insertion modifier
 insert into grades       
- values (01,'PA',300,240);
+ values (01,'PA',240,300);
 
 insert into grades
- values (02,'PH',400,200);
+ values (02,'PH',200,400);
 
 insert into grades
- values (03,'PES',500,190);
+ values (03,'PES',190,500);
+
+
+ 

@@ -73,7 +73,7 @@ class InterventionController extends Controller
         ]);
 
     } */
-    public function getAllInterventions_By_Enseignant()
+    /* public function getAllInterventions_By_Enseignant()
     {
         // Vérifier si l'utilisateur est authentifié
         if (auth()->check()) {
@@ -106,6 +106,67 @@ class InterventionController extends Controller
                 'data' => null
             ]);
         }
+    } */
+    /* public function getAllInterventions_By_Enseignant()
+    {       
+
+        if (Auth::check()){
+            $professorcode = Auth::user()->id;
+
+        // Récupérer le professeur en utilisant le code de connexion
+        $professeur = Enseignant::where('user_id', $professorcode)->first();
+
+        if (!$professeur) {
+            return response()->json([
+                'status_code' => 404,
+                'status_message' => 'Enseignant introuvable',
+                'data' => null
+            ]);
+        }
+
+        $id_professeur = $professeur->id;
+        $interventions = Intervention::where('enseignant_id', $id_professeur)
+            ->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+
+        return response()->json([
+            'status_code' => 200,
+            'status_message' => 'Toutes les interventions de l\'enseignant',
+            'data' => $interventions
+        ]);
+        }
+        else{
+            return response()->json([
+                'status_code' => 200,
+                'status_message' => 'Toutes les interventions de l\'enseignant',
+                'data' => 'unauthaurize'
+            ]);
+        }
+        
+    } */
+
+    public function getAllInterventions_By_Enseignant()
+    {
+        // Vérifier l'authentification avec le middleware
+        $this->middleware('auth:sanctum');
+
+        // Récupérer l'ID de l'utilisateur authentifié
+        $professorId = Auth::id();
+
+        // Récupérer le professeur en utilisant l'ID de l'utilisateur
+        $professeur = Enseignant::where('user_id', $professorId)->first();
+
+        if (!$professeur) {
+            // Gérer le cas où le professeur n'est pas trouvé
+            return response()->json(['error' => 'Professeur introuvable'], 404);
+        }
+
+        $id_professeur = $professeur->id;
+
+        // Récupérer les interventions du professeur
+        $interventions = Intervention::where('enseignant_id', $id_professeur)
+            ->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+
+        return response()->json($interventions, 200);
     }
 
     /* public function getInterventionsByEtablissement_By_Enseignant(Request $request, $id_etablissement)
@@ -199,29 +260,29 @@ class InterventionController extends Controller
 
 
 
-    public function update(Request $request, $id)
-    {
-        $data = $request->validate([
-            'enseignant' => 'required',
-            'etablissement' => 'required',
-            'date_debut' => 'required|date',
-            'date_fin' => 'required|date',
-            'annee_universitaire' => 'required',
-        ]);
+    /*     public function update(Request $request, $id)
+        {
+            $data = $request->validate([
+                'enseignant' => 'required',
+                'etablissement' => 'required',
+                'date_debut' => 'required|date',
+                'date_fin' => 'required|date',
+                'annee_universitaire' => 'required',
+            ]);
 
-        $intervenant = Enseignant::findOrFail($data['enseignant']);
-        $etablissement = Etablissement::findOrFail($data['etablissement']);
+            $intervenant = Enseignant::findOrFail($data['enseignant']);
+            $etablissement = Etablissement::findOrFail($data['etablissement']);
 
 
-        $intervention->intervenant_id = $data['enseignant_id'];
-        $intervention->etablissement_id = $data['etablissement_id'];
-        $intervention->date_debut = $data['date_debut'];
-        $intervention->date_fin = $data['date_fin'];
-        $intervention->annee_universitaire = $data['annee_universitaire'];
-        $intervention->save();
+            $intervention->intervenant_id = $data['enseignant_id'];
+            $intervention->etablissement_id = $data['etablissement_id'];
+            $intervention->date_debut = $data['date_debut'];
+            $intervention->date_fin = $data['date_fin'];
+            $intervention->annee_universitaire = $data['annee_universitaire'];
+            $intervention->save();
 
-        // Faites une redirection ou renvoyez une réponse appropriée
-    }
+            // Faites une redirection ou renvoyez une réponse appropriée
+        } */
 
 
     public function Valider_By_Directeur(Request $request, $id)

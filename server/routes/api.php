@@ -32,7 +32,7 @@ Route::get('/interventions', [InterventionController::class, 'getAllIntervention
 Route::get('/interventions/president/etablissement/{id_etablissement}', [InterventionController::class, 'getInterventionsByEtablissement_By_President']);
 Route::get('/interventions/president/enseignant/{id_professeur}', [InterventionController::class, 'getInterventionsByenseignant_By_President']);
 Route::get('/interventions/president/annee/{anneeUniversitaire}', [InterventionController::class, 'getInterventionsByAnnee_By_President']);
-Route::get('/interventions/enseignant', [InterventionController::class, 'getAllInterventions_By_Enseignant']);
+Route::get('/interventions/enseignant', [InterventionController::class, 'getAllInterventions_By_Enseignant'])->middleware('auth:sanctum');;
 
 Route::post('/interventions/enseignant/etablissement/{id_etablissement}', [InterventionController::class, 'getInterventionsByEtablissement_By_Enseignant']);
 Route::post('/interventions/enseignant/annee/{anneeUniversitaire}', [InterventionController::class, 'getInterventionsByAnnee_By_Enseignant']);

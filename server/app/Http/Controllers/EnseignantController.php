@@ -84,8 +84,9 @@ class EnseignantController extends Controller
             'telephone' => $fields['telephone'],
             'etablissement_id'=>$id,
             'grade_id'=>$id_grade,
-            'user_id'=>$user->id,
+            'user_id'=>$user['id'],
         ]);
+        
         return response()->json([
             'items' => $Enseignant
         ]);

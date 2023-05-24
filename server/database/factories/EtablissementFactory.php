@@ -24,7 +24,8 @@ class EtablissementFactory extends Factory
             'num_tel' => fake()->phoneNumber(),
             'faxe' => fake()->ean13(),
             'ville' => fake()->state(), 
-            'nbre_enseignant' => fake()->randomNumber()
+            'nbre_enseignant' => fake()->randomNumber(),
+            'etat' =>  fake()->boolean()
         ];
     }
 }

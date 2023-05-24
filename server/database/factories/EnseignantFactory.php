@@ -28,7 +28,8 @@ class EnseignantFactory extends Factory
             'date_naissance' => fake()->date('Y/m/d','now'),
             'etablissement_id' => Etablissement::inRandomOrder()->first()->id ,
             'grade_id' => Grade::inRandomOrder()->first()->id , 
-            'user_id' => User::inRandomOrder()->first()->id
+            'user_id' => User::inRandomOrder()->first()->id,
+            'etat' =>  fake()->boolean()
         ];
         
     }

@@ -26,8 +26,8 @@ return new class extends Migration
             $table->unsignedBigInteger('etablissement_id');
             $table->foreign('enseignant_id')->references('id')->on('enseignants')->onDelete('cascade');
             $table->foreign('etablissement_id')->references('id')->on('etablissements')->onDelete('cascade');
-            $table->integer('visa_etb');
-            $table->integer('visa_uae');
+            $table->boolean('visa_etb')->default('false')->nullable();
+            $table->boolean('visa_uae')->default('false')->nullable();
             $table->timestamps();
         });
     }

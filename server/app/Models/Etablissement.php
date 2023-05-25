@@ -14,7 +14,8 @@ class Etablissement extends Model
         'num_tel',
         'faxe',
         'ville',
-        'nbre_enseignant'
+        'nbre_enseignant',
+        'etat'
     ];
 
     public function Enseignant(){

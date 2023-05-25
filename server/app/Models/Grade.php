@@ -13,4 +13,8 @@ class Grade extends Model
         'charge_statutaire',
         'taux_horaire_vacation'
     ];
+
+    public function Enseignant(){
+        return $this->hasMany(Enseignant::class);  //Un Grade peut etre liée à un ou plusieurs enseignants
+    }
 }

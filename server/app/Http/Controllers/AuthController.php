@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+use Exception;
 use Illuminate\Http\Request;
 use  Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Enseignant;
 use App\Models\Administrateur;
@@ -11,52 +13,46 @@ use App\Models\Grade;
 class AuthController extends Controller
 {
     
-     /* public function register_Administrateur(Request $request)
-    {
-   //Validate data coming from the user
-        $fields = $request->validate([
-            'nom' => 'required | string',
-            'prenom' => 'required | string',
-            'ppr' => 'required | string',
-            'email' => 'required | string |unique:users,email',
-            'password' => 'required | string |confirmed',
-            'nom_etablissement' => 'required | string',
-            'type' => 'required | string',
-        ]);
-        $user = User::create([
-            'email' => $fields['email'],
-            'password' => bcrypt($fields['password']),
-            'type' => $request['type'],
-        ]);
-        if( $request['type']=='Adiministrateur_Etblissement'||$request['type']=='directeur' ){
-            $etablissement = Etablissement::where('nom', $request['nom_etablissement'])->first();
-            $id = $etablissement->id;
-            
-        $Administrateur =Administrateur::create([
-            'nom' => 'required | string',
-            'prenom' => 'required | string',
-            'ppr' => 'required | string',
-            
-            'date_naissance'=>'required | string',
-            'telephone' => 'required | integer',
-            'id_etablissement'=>$id,
-           
-        
-            'id_user'=>$user['id'],
-        ]);} 
-    
+    public function register(Request $request)
+    {   
+        try {
+            //Validated
+            $validateUser = Validator::make($request->all(), 
+            [
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required',
+                'type' => 'required'
+            ]);
 
- 
+            if($validateUser->fails()){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'validation error',
+                    'errors' => $validateUser->errors()
+                ], 401);
+            }
 
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'type' => $request->type
+            ]);
 
-        $token = $user->createToken('myapptoken')->plainTextToken;
+            return response()->json([
+                'status' => true,
+                'message' => 'User Created Successfully',
+                'token' => $user->createToken("API TOKEN")->plainTextToken
+            ], 200);
 
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
-        return response($response, 201);
-    }*/
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e
+            ], 500);
+        }
+    }
     
     public function login(Request $request)
     {
@@ -74,7 +70,6 @@ class AuthController extends Controller
             return response([
                 'message' => 'Bad request'
             ], 401);
-
         }
 
         $token = $user->createToken('myapptoken')->plainTextToken;

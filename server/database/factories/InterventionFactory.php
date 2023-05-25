@@ -30,8 +30,8 @@ class InterventionFactory extends Factory
             'nbr_heures' => fake()->numberBetween($min = 100, $max = 250),
             'enseignant_id' => Enseignant::inRandomOrder()->first()->id ,
             'etablissement_id' => Etablissement::inRandomOrder()->first()->id ,
-            'visa_etb' => fake()->numberBetween(0,1),
-            'visa_uae' => fake()->numberBetween(0,1),
+            'visa_etb' => fake()->boolean(),
+            'visa_uae' => fake()->boolean()
         ];
     }
 }

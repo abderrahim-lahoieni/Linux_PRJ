@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Etablissement;
+use App\Models\Grade;
 
 class Enseignant extends Model
 {
@@ -15,6 +17,22 @@ class Enseignant extends Model
         'date_naissance',
         'etablissement_id',
         'grade_id',
-        'user_id'
+        'user_id',
+        'etat'
     ];
+
+
+    public function Etablissement()
+    {
+        return $this->belongsTo(Etablissement::class); 
+    }
+    public function Grade()
+    {
+        return $this->belongsTo(Grade::class); 
+    }
+    public function User()
+    {
+        return $this->belongsTo(User::class); 
+    }
+
 }

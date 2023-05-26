@@ -2,152 +2,220 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Administrateur;
-use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Etablissement;
+use App\Models\Grade;
+use App\Models\Enseignant;
+use App\Models\User;
+use Illuminate\Http\Request;
+use App\Http\Requests\EditEtablissementRequest;
 use Exception;
 
-class AdministrateurController extends Controller
+class EnseignantController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        return response()->json([
-            'status_code' => 201,
-                'items' => Administrateur::all()
-            ]);
-
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-
-        //Validate data coming from the user
-        $fields = $request->validate([
-            'nom' => 'required | string',
-            'prenom' => 'required | string',
-            'ppr' => 'required | string',
-            'email' => 'required | string |unique:users,email',
-            'password' => 'required | string |confirmed',
-            'nom_etablissement' => 'required | string',
-            'type' => 'required | string',  //Type faut qu'il faut DIRECTEUR,ADMINISTRATEUR_ETA
-        ]);
-        $user = User::create([
-            'name' => $fields['nom'],
-            'email' => $fields['email'],
-            'password' => bcrypt($fields['password']),
-            'type' => $fields['type']
-        ]);
-        
-            $etablissement = Etablissement::where('nom', $fields['nom_etablissement'])->first();
-            $id = $etablissement->id;
-
-            $Administrateur = Administrateur::create([
-                'nom' => $fields['nom'],
-                'prenom' => $fields['prenom'],
-                'ppr' => $fields['ppr'],
-
-                'etablissement_id' => $id,
-                'user_id' => $user->id
-            ]);
-            return response()->json([
-                'status_code' => 200,
-                'items' => $Administrateur
-            ]);
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
+   
+    //affichage des informations
     public function show($id)
     {
-        $admin = Administrateur::find($id);
-        
+        $Admin =Administrateur::findOrFail($id);
         return response()->json([
-            'status_code' => 200,
-            'items' => $admin
-        ]); 
+            'status_code' => 200 ,
+            'items' => $Admin
+        ]);
+        
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Administrateur $administrateur)
+    public function Profile()
     {
-        //
+       
+        $Admincode =Auth::id();
+       
+        $Admin = Administrateur::where('user_id', $Admincode)->first();
+        $id_Admin = $Admin->id;
+        $Administrateur =Administrateur ::findOrFail( $id_professeur);
+        return response()->json([
+            'status_code' => 200 ,
+            'items' =>$Administrateur,
+        ]);
+   
+   }
+    public function AffichageAll_President()
+    {   
+        $enseignant =Administrateur::all();
+        return response()->json([
+            'status_code' => 200 ,
+            'items' => $enseignant
+        ]);
+        
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Administrateur $administrateur)
+    public function AffichagebyEtablissement_President($id_etablissement)
+    {   
+        $administrateur =Administrateur::where('etablissement_id',$id_etablissement)->first();
+        return response()->json([
+            'status_code' => 200 ,
+            'items' => $enseignant
+        ]);
+        
+    }
+ 
+  
+    // Suppression d'un Administrateur
+    public function destroy($id)
     {
+        $admin = Administrateur::findOrFail($id);
+
+        $admin->delete();
+    
+        return response()->json([
+            'message' => 'L\'administrateur a été supprimé avec succès'
+        ]);
+    }
+    
+    public function store_Administrateur_Etablissement(Request $request)
+    {     
+
         
         //Validate data coming from the user
         $fields = $request->validate([
             'nom' => 'required | string',
             'prenom' => 'required | string',
             'ppr' => 'required | string',
+            'nom_etablissement'=>'required |string',
+             'ville'=>'required |`string',
             'email' => 'required | string |unique:users,email',
-            'password' => 'required | string |confirmed'  //Type faut qu'il faut DIRECTEUR,ADMINISTRATEUR_ETA
+            'password' => 'required | string |confirmed',
+            
         ]);
+       
+        
+   
         $user = User::create([
-            $administrateur->nom => $fields['nom'],
-            $administrateur->email  => $fields['email'],
-            $administrateur->password  => bcrypt($fields['password']),
-            $administrateur->type  => $fields['type']
+            
+            'email' => $fields['email'],
+            'password' => bcrypt($fields['password']),
+            'type' => 'Administrateur_Etablissement'
         ]);
-        
-            $etablissement = Etablissement::where('nom', $fields['nom_etablissement'])->first();
-            $id = $etablissement->id;
-
-            $Administrateur = Administrateur::create([
-                'nom' => $fields['nom'],
-                'prenom' => $fields['prenom'],
-                'ppr' => $fields['ppr'],
-
-                'etablissement_id' => $id,
-                'user_id' => $user->id
-            ]);
-            return response()->json([
-                'status_code' => 200,
-                'items' => $Administrateur
-            ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        $admin = Administrateur::find($id);
-        // Supprimez l'enseignant de la table "enseignant"
-        $admin->delete();
-        
-        // Supprimez également l'utilisateur associé de la table "users"
-        //Trigger 
-        $user = $admin->user_id;
-        $user1 = User::where('id', $user)->first();
-        $user1->delete();
-        
+        $Etablissement=Etablissemnt::where('nom',$fields['nom_etablissement'])->where('ville',$fields['ville'])->first();
+  
+        $Administrateur =Administrateur::create([
+            'nom' => $fields['nom'],
+            'prenom' => $fields['prenom'],
+            'ppr' => $fields['ppr'],
+            
+            
+            'etablissement_id'=>$id_etablissement,
+    
+            'user_id'=>$user['id'],
+        ]);
+    
         return response()->json([
-            'status_code' => 201 ,
-            'success' => 'L\'enseignant est supprimé avec succès'
+            'items' => $Administrateur,
         ]);
     }
+       
+    
+
+    //Create un Administrateur
+    public function store_Directeur(Request $request)
+    {     
+
+        $Admin =Auth::id();
+
+        // Récupérer l'Administrateur en utilisant le code de connexion
+        $Administrateur =Administrateur::where('user_id',$Admin)->first();
+        $id_etablissement =$Administrateur->id_etablissement ;
+        //Validate data coming from the user
+        $fields = $request->validate([
+            'nom' => 'required | string',
+            'prenom' => 'required | string',
+            'ppr' => 'required | string',
+            
+          
+            'email' => 'required | string |unique:users,email',
+            'password' => 'required | string |confirmed',
+            
+        ]);
+       
+        
+   
+        $user = User::create([
+            
+            'email' => $fields['email'],
+            'password' => bcrypt($fields['password']),
+            'type' => 'Directeur'
+        ]);
+  
+        $Administrateur =Administrateur::create([
+            'nom' => $fields['nom'],
+            'prenom' => $fields['prenom'],
+            'ppr' => $fields['ppr'],
+            
+            
+            'etablissement_id'=>$id_etablissement,
+    
+            'user_id'=>$user['id'],
+        ]);
+    
+        return response()->json([
+            'items' => $Administrateur,
+        ]);
+    }
+    public function update_profile(Request $request)
+    {
+        $admin=Auth::id();
+        $administrateur=Administrateur::where('id',$admin)->first();
+
+        $fields = $request->validate([
+            'nom' => 'required|string',
+            'prenom' => 'required|string',
+            'ppr' => 'required|string',
+           
+        ]);
+    
+
+        $Administrateur->nom = $fields['nom'];
+        $Administrateur->prenom = $fields['prenom'];
+        $Administrateur->ppr = $fields['ppr'];
+       
+    
+        $Administrateur->save();
+    
+        return response()->json(['message' => 'Votre INformations sont  mises à jour avec succès'], 200);
+    }
+    public function update(Request $request, $id)
+    {
+        $fields = $request->validate([
+            'nom' => 'required|string',
+            'prenom' => 'required|string',
+            'ppr' => 'required|string',
+           
+        ]);
+    
+        $Administrateur= Administrateur::findOrFail($id);
+        $Administrateur->nom = $fields['nom'];
+        $Administrateur->prenom = $fields['prenom'];
+        $Administrateur->ppr = $fields['ppr'];
+       
+    
+        $Administrateur->save();
+    
+        return response()->json(['message' => 'Informations personnelles de l\'Administrateur sont mises à jour avec succès'], 200);
+    }
+    public function changer_etablissement(Request $request, $id)
+    {
+        $fields = $request->validate([
+           
+                'nom'=>'required | string',
+                'ville'=>'required | string',
+        ]);
+        $etablissement=Etablissement::where('nom',$required['nom'])->where('ville',$required['ville'])->first();
+        $Administrateur= Administrateur::findOrFail($id);
+        $Administrateur->id_etablissement= $etablissement->id;
+       
+     
+    
+        $Administrateur->save();
+    
+        return response()->json(['message' => 'Etablissement changé'], 200);
+    }
+   
+    
 }

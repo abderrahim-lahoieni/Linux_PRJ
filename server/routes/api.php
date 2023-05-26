@@ -154,7 +154,4 @@ Route::middleware('check.role:role_enseignant')->group(function () {
     Route::get('enseignant/interventions/annee/{anneeUniversitaire}', [InterventionController::class, 'getInterventionsByAnnee_By_Enseignant']);
     Route::get('enseignant/interventions', [InterventionController::class, 'getAllInterventions_By_Enseignant']);
     Route::get('enseignant/interventions/etablissement/{id_etablissement}', [InterventionController::class, 'getInterventionsByEtablissement_By_Enseignant']);
-    
-
-
 });

@@ -15,6 +15,7 @@ class AdministrateurController extends Controller
      */
     public function index()
     {
+        
         return response()->json([
             'status_code' => 201,
                 'items' => Administrateur::all()
@@ -34,7 +35,9 @@ class AdministrateurController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+    { if(!Gate::allows('role_admin_univ')) {
+        abort('403');
+       }
 
         //Validate data coming from the user
         $fields = $request->validate([
@@ -75,7 +78,9 @@ class AdministrateurController extends Controller
      * Display the specified resource.
      */
     public function show($id)
-    {
+    { if(!Gate::allows('role_admin_univ')) {
+        abort('403');
+       }
         $admin = Administrateur::find($id);
         
         return response()->json([
@@ -96,7 +101,7 @@ class AdministrateurController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Administrateur $administrateur)
-    {
+    { if (Gate::allows('role_admin_univ') || (Gate::any(['role_admin_eta', 'role_directeur']) && $id == Auth::id())) {
         
         //Validate data coming from the user
         $fields = $request->validate([
@@ -128,6 +133,13 @@ class AdministrateurController extends Controller
                 'status_code' => 200,
                 'items' => $Administrateur
             ]);
+        }
+        else {
+            // L'utilisateur n'a pas le rôle 'role_admin_univ' ou l'ID du compte à modifier
+            // n'est pas égal à l'ID de l'utilisateur connecté
+            // Interdire la modificationd'un autre compte
+            abort(403);
+        }
     }
 
     /**
@@ -135,6 +147,10 @@ class AdministrateurController extends Controller
      */
     public function destroy($id)
     {
+        if(!Gate::allows('role_admin_univ')) {
+            abort('403');
+           }
+            
         $admin = Administrateur::find($id);
         // Supprimez l'enseignant de la table "enseignant"
         $admin->delete();

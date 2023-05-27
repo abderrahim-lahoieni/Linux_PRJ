@@ -12,11 +12,87 @@ use Exception;
 
 class EnseignantController extends Controller
 {
+<<<<<<< HEAD
    
     //affichage des informations
     public function show($id)
     {
         $Admin =Administrateur::findOrFail($id);
+=======
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        
+        return response()->json([
+            'status_code' => 201,
+                'items' => Administrateur::all()
+            ]);
+
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    { if(!Gate::allows('role_admin_univ')) {
+        abort('403');
+       }
+
+        //Validate data coming from the user
+        $fields = $request->validate([
+            'nom' => 'required | string',
+            'prenom' => 'required | string',
+            'ppr' => 'required | string',
+            'email' => 'required | string |unique:users,email',
+            'password' => 'required | string |confirmed',
+            'nom_etablissement' => 'required | string',
+            'type' => 'required | string',  //Type faut qu'il faut DIRECTEUR,ADMINISTRATEUR_ETA
+        ]);
+        $user = User::create([
+            'name' => $fields['nom'],
+            'email' => $fields['email'],
+            'password' => bcrypt($fields['password']),
+            'type' => $fields['type']
+        ]);
+        
+            $etablissement = Etablissement::where('nom', $fields['nom_etablissement'])->first();
+            $id = $etablissement->id;
+
+            $Administrateur = Administrateur::create([
+                'nom' => $fields['nom'],
+                'prenom' => $fields['prenom'],
+                'ppr' => $fields['ppr'],
+
+                'etablissement_id' => $id,
+                'user_id' => $user->id
+            ]);
+            return response()->json([
+                'status_code' => 200,
+                'items' => $Administrateur
+            ]);
+
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
+    { if(!Gate::allows('role_admin_univ')) {
+        abort('403');
+       }
+        $admin = Administrateur::find($id);
+        
+>>>>>>> daef3291be2ec3a9d92741443420a5be3fc799fa
         return response()->json([
             'status_code' => 200 ,
             'items' => $Admin
@@ -46,6 +122,7 @@ class EnseignantController extends Controller
         ]);
         
     }
+<<<<<<< HEAD
     public function AffichagebyEtablissement_President($id_etablissement)
     {   
         $administrateur =Administrateur::where('etablissement_id',$id_etablissement)->first();
@@ -72,6 +149,14 @@ class EnseignantController extends Controller
     public function store_Administrateur_Etablissement(Request $request)
     {     
 
+=======
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Administrateur $administrateur)
+    { if (Gate::allows('role_admin_univ') || (Gate::any(['role_admin_eta', 'role_directeur']) && $id == Auth::id())) {
+>>>>>>> daef3291be2ec3a9d92741443420a5be3fc799fa
         
         //Validate data coming from the user
         $fields = $request->validate([
@@ -93,6 +178,7 @@ class EnseignantController extends Controller
             'password' => bcrypt($fields['password']),
             'type' => 'Administrateur_Etablissement'
         ]);
+<<<<<<< HEAD
         $Etablissement=Etablissemnt::where('nom',$fields['nom_etablissement'])->where('ville',$fields['ville'])->first();
   
         $Administrateur =Administrateur::create([
@@ -106,6 +192,52 @@ class EnseignantController extends Controller
             'user_id'=>$user['id'],
         ]);
     
+=======
+        
+            $etablissement = Etablissement::where('nom', $fields['nom_etablissement'])->first();
+            $id = $etablissement->id;
+
+            $Administrateur = Administrateur::create([
+                'nom' => $fields['nom'],
+                'prenom' => $fields['prenom'],
+                'ppr' => $fields['ppr'],
+
+                'etablissement_id' => $id,
+                'user_id' => $user->id
+            ]);
+            return response()->json([
+                'status_code' => 200,
+                'items' => $Administrateur
+            ]);
+        }
+        else {
+            // L'utilisateur n'a pas le rôle 'role_admin_univ' ou l'ID du compte à modifier
+            // n'est pas égal à l'ID de l'utilisateur connecté
+            // Interdire la modificationd'un autre compte
+            abort(403);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        if(!Gate::allows('role_admin_univ')) {
+            abort('403');
+           }
+            
+        $admin = Administrateur::find($id);
+        // Supprimez l'enseignant de la table "enseignant"
+        $admin->delete();
+        
+        // Supprimez également l'utilisateur associé de la table "users"
+        //Trigger 
+        $user = $admin->user_id;
+        $user1 = User::where('id', $user)->first();
+        $user1->delete();
+        
+>>>>>>> daef3291be2ec3a9d92741443420a5be3fc799fa
         return response()->json([
             'items' => $Administrateur,
         ]);

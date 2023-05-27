@@ -14,7 +14,11 @@ class AuthController extends Controller
 {
     
     public function register(Request $request)
-    {   
+    {  
+        //pour creer un president dans la table user
+         if(!Gate::allows('role_admin_univ')) {
+        abort('403');
+       }
         try {
             //Validated
             $validateUser = Validator::make($request->all(), 

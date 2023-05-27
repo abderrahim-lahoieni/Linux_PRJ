@@ -13,18 +13,18 @@ return new class extends Migration
      //Create table enseignants
     public function up(): void
     {
-        Schema::create('enseignants', function (Blueprint $table) {
+        Schema::create('Enseignant', function (Blueprint $table) {
             $table->id();
             $table->string('ppr')->unique;
             $table->string('nom');
             $table->string('prenom');
             $table->date('date_naissance');
-            $table->unsignedBigInteger('etablissement_id');
-            $table->unsignedBigInteger('grade_id');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('etablissement_id')->references('id')->on('etablissements')->onDelete('cascade');
-            $table->foreign('grade_id')->references('id')->on('grades')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->unsignedBigInteger('etablissement');
+            $table->unsignedBigInteger('id_grade');
+            $table->unsignedBigInteger('id_user');
+            $table->foreign('etablissement')->references('id')->on('Etablissement')->onDelete('cascade');
+            $table->foreign('id_grade')->references('id')->on('Grade')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('Users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

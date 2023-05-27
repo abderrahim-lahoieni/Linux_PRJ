@@ -19,6 +19,8 @@ class Etablissement extends Model
     ];
 
     public function Enseignant(){
+
         return $this->hasMany(Enseignant::class); //Une établissement est liée à un ou plusieurs enseignants
+        
     }
 }

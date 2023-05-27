@@ -23,13 +23,13 @@ class InterventionFactory extends Factory
     {
         return [
             'intitule_intervention' => fake()->text(20),
-            'annee__univ' => fake()->year($max = 'now') ,
+            'annee_univ' => fake()->year($max = 'now') ,
             'semestre' => fake()->numerify('S#'), 
             'date_debut' => fake()->date($format = 'Y/m/d', $max = 'now') ,
             'date_fin' => fake()->date($format = 'Y/m/d', $max = 'now') ,
             'nbr_heures' => fake()->numberBetween($min = 100, $max = 250),
-            'enseignant_id' => Enseignant::inRandomOrder()->first()->id ,
-            'etablissement_id' => Etablissement::inRandomOrder()->first()->id ,
+            'id_intervenant' => Enseignant::inRandomOrder()->first()->id ,
+            'id_etab' => Etablissement::inRandomOrder()->first()->id ,
             'visa_etb' => fake()->boolean(),
             'visa_uae' => fake()->boolean()
         ];

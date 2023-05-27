@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('prenom');
             $table->unsignedBigInteger('etablissement_id');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('etablissement_id')->references('id')->on('etablissements')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('etablissement_id')->references('id')->on('Etablissement')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
             $table->timestamps();
         });
     }

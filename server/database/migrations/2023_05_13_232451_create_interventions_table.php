@@ -17,15 +17,15 @@ return new class extends Migration
         Schema::create('interventions', function (Blueprint $table) {
             $table->id();
             $table->string('intitule_intervention');
-            $table->string('annee__univ');
+            $table->string('annee_univ');
             $table->string('semestre');
             $table->date('date_debut');
             $table->date('date_fin');
-            $table->integer('nbr_heures');
-            $table->unsignedBigInteger('enseignant_id');
-            $table->unsignedBigInteger('etablissement_id');
-            $table->foreign('enseignant_id')->references('id')->on('enseignants')->onDelete('cascade');
-            $table->foreign('etablissement_id')->references('id')->on('etablissements')->onDelete('cascade');
+            $table->integer('nbr_heures')->default(0);
+            $table->unsignedBigInteger('id_intervenant');
+            $table->unsignedBigInteger('id_etab');
+            $table->foreign('id_intervenant')->references('id')->on('Enseignant')->onDelete('cascade');
+            $table->foreign('id_etab')->references('id')->on('Etablissement')->onDelete('cascade');
             $table->boolean('visa_etb')->default('false')->nullable();
             $table->boolean('visa_uae')->default('false')->nullable();
             $table->timestamps();

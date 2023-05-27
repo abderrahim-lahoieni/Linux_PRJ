@@ -292,7 +292,7 @@ class InterventionController extends Controller
         ]);
 
         $intervenant = Enseignant::where('ppr' , $data['ppr_enseignant'])->first();
-
+        if($intervenant->etat){
         $intervention = Intervention::create([
             'intitule_intervention' => $data['intitule_intervention'],
             'annee__univ' => $data['annee__univ'],
@@ -309,6 +309,11 @@ class InterventionController extends Controller
             'status_message' => 'les interventions de l\'université ont été récupérés',
             'data' => $intervention
         ]);
+    }else{
+            return response()->json([
+            'status_code' => 200,
+            'status_message' => 'Ce professeur est supprimé',]);
+        }
 
     }
 

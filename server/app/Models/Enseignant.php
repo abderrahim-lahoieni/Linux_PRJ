@@ -26,10 +26,12 @@ class Enseignant extends Model
     {
         return $this->belongsTo(Etablissement::class); 
     }
+
     public function Grade()
     {
         return $this->belongsTo(Grade::class); 
     }
+    
     public function User()
     {
         return $this->belongsTo(User::class); 

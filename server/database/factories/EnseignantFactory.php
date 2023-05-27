@@ -26,9 +26,9 @@ class EnseignantFactory extends Factory
             'nom' => fake()->lastname(),
             'prenom' => fake()->firstName(),
             'date_naissance' => fake()->date('Y/m/d','now'),
-            'etablissement_id' => Etablissement::inRandomOrder()->first()->id ,
-            'grade_id' => Grade::inRandomOrder()->first()->id , 
-            'user_id' => User::inRandomOrder()->first()->id,
+            'etablissement' => Etablissement::inRandomOrder()->first()->id ,
+            'id_grade' => Grade::inRandomOrder()->first()->id , 
+            'id_user' => User::inRandomOrder()->first()->id,
             'etat' =>  fake()->boolean()
         ];
         

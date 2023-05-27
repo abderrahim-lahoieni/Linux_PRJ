@@ -28,8 +28,8 @@ class PaiementFactory extends Factory
             'net' =>fake()->randomFloat($nbMaxDecimals = 3, $min = 0, $max = 9000),
             'annee_univ' =>fake()->numerify('2020/202#') ,
             'semestre' => fake()->numerify('S#'),
-            'enseignant_id' => Enseignant::inRandomOrder()->first()->id,
-            'etablissement_id' => Etablissement::inRandomOrder()->first()->id,
+            'id_intervenant' => Enseignant::inRandomOrder()->first()->id,
+            'id_etab' => Etablissement::inRandomOrder()->first()->id,
         ];
     }
 }

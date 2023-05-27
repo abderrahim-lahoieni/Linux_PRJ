@@ -41,7 +41,7 @@ class GradeController extends Controller
         $grade->charge_statutaire = $request->charge_statutaire;
         $grade->taux_horaire_vacation = $request->taux_horaire_vacation;
 
-        $grade->save();
+        $grade->save(); 
 
         return response()->json([
             'status_code' => 201,

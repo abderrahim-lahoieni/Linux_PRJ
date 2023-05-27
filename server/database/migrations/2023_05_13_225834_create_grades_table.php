@@ -14,7 +14,7 @@ return new class extends Migration
     ////Create table grades
     public function up(): void
     {
-        Schema::create('grades', function (Blueprint $table) {
+        Schema::create('Grade', function (Blueprint $table) {
             $table->id();
             $table->string('designation');
             $table->integer('charge_statutaire');

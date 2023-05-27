@@ -14,6 +14,15 @@ use Exception;
 class EnseignantController extends Controller
 {
 
+    public function index(){
+        $enseignant = Enseignant::all();
+        return response()->json([
+            'status_code' => 200,
+            'items' => $enseignant
+        ]);
+    }
+
+
     //affichage des informations
     public function show($id)
     {

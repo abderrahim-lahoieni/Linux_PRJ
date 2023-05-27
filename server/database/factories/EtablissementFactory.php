@@ -21,10 +21,10 @@ class EtablissementFactory extends Factory
         return [
             'code' => fake()->countryCode(),
             'nom' => fake()->name(),
-            'num_tel' => fake()->phoneNumber(),
+            'telephone' => fake()->phoneNumber(),
             'faxe' => fake()->ean13(),
             'ville' => fake()->state(), 
-            'nbre_enseignant' => fake()->randomNumber(),
+            'nbr_enseignants' => fake()->randomNumber(),
             'etat' =>  fake()->boolean()
         ];
     }

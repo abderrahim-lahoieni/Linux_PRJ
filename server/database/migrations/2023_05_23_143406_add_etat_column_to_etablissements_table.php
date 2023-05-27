@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('etablissements', function (Blueprint $table) {
+        Schema::table('Etablissement', function (Blueprint $table) {
             $table->boolean('etat');
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('etablissements', function (Blueprint $table) {
+        Schema::table('Etablissement', function (Blueprint $table) {
             $table->dropColumn('etat');
         });
     }

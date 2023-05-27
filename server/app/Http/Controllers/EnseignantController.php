@@ -87,14 +87,10 @@ class EnseignantController extends Controller
     {
 
         $enseignant = Enseignant::find($id);
-        // Supprimez l'enseignant de la table "enseignant"
-        $enseignant->delete();
+        // changer l'etat 
+        $enseignant->etat=false;
 
-        // Supprimez également l'utilisateur associé de la table "users"
-        //Trigger 
-        $user = $enseignant->user_id;
-        $user1 = User::where('id', $user)->first();
-        $user1->delete();
+        $enseignant->save();
 
         return response()->json([
             'status_code' => 201,
@@ -129,6 +125,9 @@ class EnseignantController extends Controller
             'designation' => 'required | string',
             'etat' => 'required'
         ]);
+        $userExists = User::where('email', $fields['email'])->exists();
+        
+    if (!$userExists) {
         $user = User::create([
             'name' => $fields['nom'],
             'email' => $fields['email'],
@@ -153,7 +152,33 @@ class EnseignantController extends Controller
 
         return response()->json([
             'items' => $Enseignant
+        ]);}else{
+           $enseignant=Enseignant::where('user_id',$userExists->id);
+          $enseignant->etat=false;
+
+        }
+    }
+    public function update_profile(Request $request)
+    {
+        $Enseignant=Auth::id();
+        $Enseignant1=Enseignant::where('id',$Enseignant)->first();
+
+        $fields = $request->validate([
+            'nom' => 'required|string',
+            'prenom' => 'required|string',
+            'ppr' => 'required|string',
+           
         ]);
+    
+
+        $Enseignant1->nom = $fields['nom'];
+        $Enseignant1->prenom = $fields['prenom'];
+        $Enseignant1->ppr = $fields['ppr'];
+       
+    
+        $Enseignant1->save();
+    
+        return response()->json(['message' => 'Votre INformations sont  mises à jour avec succès'], 200);
     }
     public function update(Request $request, $id)
     {
@@ -175,6 +200,23 @@ class EnseignantController extends Controller
         $enseignant->save();
 
         return response()->json(['message' => 'Informations personnelles de l\'enseignant mises à jour avec succès'], 200);
+    }
+    public function changer_etablissement(Request $request, $id)
+    {
+        $fields = $request->validate([
+           
+                'nom'=>'required | string',
+                'ville'=>'required | string',
+        ]);
+        $etablissement=Administrateur::where('nom',$required['nom'])->where('ville',$required['ville'])->first();
+        $enseignant = Enseignant::findOrFail($id);
+        $enseignant->id_etablissemen= $etablissement->id;
+       
+     
+    
+        $enseignant->save();
+    
+        return response()->json(['message' => 'Etablissement changé'], 200);
     }
 
 }

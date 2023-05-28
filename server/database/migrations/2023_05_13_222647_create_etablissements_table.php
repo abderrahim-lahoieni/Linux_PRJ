@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('faxe');
             $table->string('ville')->default('tanger');
             $table->integer('nbr_enseignants')->default(0);
+            $table->boolean('etat');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('etablissements');
+        Schema::dropIfExists('Etablissement');
     }
 };

@@ -26,10 +26,10 @@ class CreateEtablissementRequest extends FormRequest
         return [
             'code' => 'unique:etablissements|required|string',
             'nom' => 'required|string',
-            'num_tel' => 'string',
+            'telephone' => 'string',
             'faxe' => 'string',
             'ville' => 'string',
-            'nbre_enseignant' => 'integer'
+            'nbr_enseignants' => 'integer'
         ];
     }
 
@@ -48,7 +48,7 @@ class CreateEtablissementRequest extends FormRequest
             'code.required' => 'Un code doit etre fourni',
             'nom.required' => 'Un nom doit etre fourni',
             'ville.required' => 'Une ville doit etre fourni',
-            'nbre_enseignant.required' => 'Un nombre d enseignant doit etre fourni',
+            'nbr_enseignants.required' => 'Un nombre d enseignant doit etre fourni',
         ];
     }
 }

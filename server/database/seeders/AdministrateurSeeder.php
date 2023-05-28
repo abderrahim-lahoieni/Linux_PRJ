@@ -20,8 +20,8 @@ class AdministrateurSeeder extends Seeder
             'ppr' => 'AA4456',
             'nom' => 'Chanaa',
             'prenom' => 'Aimane',
-            'etablissement_id' => 1,
-            'user_id' => 1
+            'etablissement' => 1,
+            'id_user' => 1
         ]);
     } 
 }

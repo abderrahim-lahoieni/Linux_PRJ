@@ -25,8 +25,8 @@ class AdministrateurFactory extends Factory
             'ppr' => fake()->unique()->randomNumber(),
             'nom' => fake()->lastname(),
             'prenom' => fake()->firstName(),
-            'etablissement_id' => Etablissement::inRandomOrder()->first()->id,
-            'user_id' => User::inRandomOrder()->first()->id
+            'etablissement' => Etablissement::inRandomOrder()->first()->id,
+            'id_user' => User::inRandomOrder()->first()->id
             
         ];
     }

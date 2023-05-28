@@ -12,8 +12,18 @@ class Administrateur extends Model
         'ppr',
         'nom',
         'prenom',
-        'etablissement_id',
-        'user_id',
+        'etablissement',
+        'id_user',
     ];
+    
+    public function Etablissement()
+    {
+        return $this->belongsTo(Etablissement::class); 
+    }
+
+    public function User()
+    {
+        return $this->belongsTo(User::class); 
+    }
     
 }

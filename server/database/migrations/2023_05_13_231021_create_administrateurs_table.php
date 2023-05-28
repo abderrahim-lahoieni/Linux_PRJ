@@ -13,15 +13,15 @@ return new class extends Migration
      // //Create table administrateurs
     public function up(): void
     {
-        Schema::create('administrateurs', function (Blueprint $table) {
+        Schema::create('Administrateur', function (Blueprint $table) {
             $table->id();
             $table->string('ppr')->unique;//Numero national pour l'enseignant
             $table->string('nom');
             $table->string('prenom');
-            $table->unsignedBigInteger('etablissement_id');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('etablissement_id')->references('id')->on('Etablissement')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+            $table->unsignedBigInteger('etablissement');
+            $table->unsignedBigInteger('id_user');
+            $table->foreign('etablissement')->references('id')->on('Etablissement')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('Users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('administrateurs');
+        Schema::dropIfExists('Administrateur');
     }
 };

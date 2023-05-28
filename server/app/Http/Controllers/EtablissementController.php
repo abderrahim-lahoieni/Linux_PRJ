@@ -15,7 +15,7 @@ class EtablissementController extends Controller
      */
 
     //Affichage le contenu des tous les etablissements
-    public function index(Request $request)
+    /* public function index(Request $request)
     {   
         try{
             //Pour faire la pagination si on a plusieurs enregistrements dans la table entreprises
@@ -41,6 +41,14 @@ class EtablissementController extends Controller
         }catch(Exception $e){
             return response()->json($e);
         }
+    } */
+    //Affichage  tous les etablissements
+    public function index(){
+        $etab = Etablissement::all();
+        return response()->json([
+            'status_code' => 200 ,
+            'items' => $etab
+        ]);
     }
 
     /**
@@ -65,10 +73,10 @@ class EtablissementController extends Controller
             //les noms des champs de request sont les noms des input
             $etab->code = $request->code;
             $etab->nom = $request->nom;
-            $etab->num_tel = $request->num_tel;
+            $etab->telephone = $request->telephone;
             $etab->faxe = $request->faxe;
             $etab->ville = $request->ville;
-            $etab->nbre_enseignant = $request->nbre_enseignant;
+            $etab->nbr_enseignants = $request->nbr_enseignants;
 
             $etab->save();
 
@@ -123,10 +131,10 @@ class EtablissementController extends Controller
 
             $etab->code = $request->code;
             $etab->nom = $request->nom;
-            $etab->num_tel = $request->num_tel;
+            $etab->telephone = $request->num_tel;
             $etab->faxe = $request->faxe;
             $etab->ville = $request->ville;
-            $etab->nbre_enseignant = $request->nbre_enseignant;
+            $etab->nbr_enseignants = $request->nbre_enseignant;
 
             $etab->save(); //Enregistrement de nouvelles valeurs
 

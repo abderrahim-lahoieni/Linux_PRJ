@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('etablissement');
             $table->unsignedBigInteger('id_grade');
             $table->unsignedBigInteger('id_user');
+            $table->boolean('etat');
             $table->foreign('etablissement')->references('id')->on('Etablissement')->onDelete('cascade');
             $table->foreign('id_grade')->references('id')->on('Grade')->onDelete('cascade');
             $table->foreign('id_user')->references('id')->on('Users')->cascadeOnDelete();
@@ -34,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('enseignants');
+        Schema::dropIfExists('Enseignant');
     }
 };

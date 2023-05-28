@@ -15,9 +15,9 @@ class Enseignant extends Model
         'nom',
         'prenom',
         'date_naissance',
-        'etablissement_id',
-        'grade_id',
-        'user_id',
+        'etablissement',
+        'id_grade',
+        'id_user',
         'etat'
     ];
 

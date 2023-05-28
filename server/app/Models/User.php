@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+//User::create(['name' => 'Samir' ,])
+
 
 class User extends Authenticatable
 {
@@ -19,7 +21,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
         'type',
@@ -47,5 +48,13 @@ class User extends Authenticatable
 
     public function Enseignant(){
         return $this->hasOne(Enseignant::class); //Un utilisateur est lié à un et un seul enseignant
+    }
+
+    public function Intervention(){
+        return $this->hasMany(Intervention::class); //Un utilisateur a  un ou plussieurs interventions
+    }
+
+    public function Paiement(){
+        return $this->hasOne(Paiement::class); //Un utilisateur est lié à un et un seul paiement
     }
 }

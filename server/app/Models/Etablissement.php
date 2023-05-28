@@ -11,14 +11,34 @@ class Etablissement extends Model
     protected $fillable = [
         'code',
         'nom',
-        'num_tel',
+        'telephone',
         'faxe',
         'ville',
-        'nbre_enseignant',
+        'nbr_enseignants',
         'etat'
     ];
 
     public function Enseignant(){
+
         return $this->hasMany(Enseignant::class); //Une établissement est liée à un ou plusieurs enseignants
+        
     }
+
+    public function Administrateur(){
+
+        return $this->hasOne(Administrateur::class); //Une établissement est liée à un et un seul administrateur  
+    }
+
+    public function Intervention(){
+
+        return $this->hasMany(Intervention::class); //Une établissement est liée à un ou plusieurs interventions
+        
+    }
+
+    public function Paiement(){
+
+        return $this->hasMany(Paiement::class); //Une établissement est liée à un ou plusieurs paiements
+        
+    }
+
 }

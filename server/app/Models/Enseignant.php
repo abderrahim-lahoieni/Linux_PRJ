@@ -15,9 +15,9 @@ class Enseignant extends Model
         'nom',
         'prenom',
         'date_naissance',
-        'etablissement_id',
-        'grade_id',
-        'user_id',
+        'etablissement',
+        'id_grade',
+        'id_user',
         'etat'
     ];
 
@@ -26,10 +26,12 @@ class Enseignant extends Model
     {
         return $this->belongsTo(Etablissement::class); 
     }
+
     public function Grade()
     {
         return $this->belongsTo(Grade::class); 
     }
+    
     public function User()
     {
         return $this->belongsTo(User::class); 

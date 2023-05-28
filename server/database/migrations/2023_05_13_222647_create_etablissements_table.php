@@ -12,14 +12,15 @@ return new class extends Migration
     //Create table etablissements
     public function up(): void
     {
-        Schema::create('etablissements', function (Blueprint $table) {
+        Schema::create('Etablissement', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique;
             $table->string('nom');
-            $table->string('num_tel');
+            $table->string('telephone');
             $table->string('faxe');
-            $table->string('ville')->default('tanger');;
-            $table->integer('nbre_enseignant')->default(0);;
+            $table->string('ville')->default('tanger');
+            $table->integer('nbr_enseignants')->default(0);
+            $table->boolean('etat');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('etablissements');
+        Schema::dropIfExists('Etablissement');
     }
 };

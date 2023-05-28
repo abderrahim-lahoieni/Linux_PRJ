@@ -10,14 +10,25 @@ class Intervention extends Model
     use HasFactory;
     protected $fillable = [
         'intitule_intervention',
-        'annee__univ',
+        'annee_univ',
         'semestre',
         'date_debut',
         'date_fin',
         'nbr_heures',
-        'enseignant_id',
-        'etablissement_id',
+        'id_intervenant',
+        'id_etab',
         'visa_etb',
         'visa_uae'
     ];
+
+    public function Etablissement()
+    {
+        return $this->belongsTo(Etablissement::class); 
+    }
+
+    public function User()
+    {
+        return $this->belongsTo(User::class); 
+    }
+
 }

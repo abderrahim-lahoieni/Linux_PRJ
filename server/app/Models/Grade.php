@@ -15,6 +15,7 @@ class Grade extends Model
     ];
 
     public function Enseignant(){
+        
         return $this->hasMany(Enseignant::class);  //Un Grade peut etre liée à un ou plusieurs enseignants
     }
 }

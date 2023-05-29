@@ -16,7 +16,7 @@ class InterventionController extends Controller
         abort('403');
        }
         $interventions = Intervention::where('visa_etb', 1)
-            ->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+            ->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
 
 
         return response()->json([
@@ -32,7 +32,7 @@ class InterventionController extends Controller
             abort('403');
            }
         $interventions = Intervention::where('visa_etb', 1)
-            ->where('etablissement_id', $id_etablissement)->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+            ->where('id_etab', $id_etablissement)->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
         return response()->json([
             'status_code' => 200,
             'status_message' => 'les interventions de l\'université ont été récupérés',
@@ -47,11 +47,13 @@ class InterventionController extends Controller
             abort('403');
            }
         $interventions = Intervention::where('visa_etb', 1)
-            ->where('enseignant_id', $id_enseignant)->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures', 'enseignant_id']);
+            ->where('id_intervenant', $id_enseignant)->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+        $enseignant =Enseignant::where('id_user',$interventions->id_intervenant) ;
         return response()->json([
             'status_code' => 200,
             'status_message' => 'les interventions de l\'université ont été récupérés',
-            'data' => $interventions
+            'interventions' => $interventions ,
+            'enseignant' => $enseignant
         ]);
     }
 
@@ -61,7 +63,7 @@ class InterventionController extends Controller
             abort('403');
            }
         $interventions = Intervention::where('visa_etb', 1)
-            ->where('annee__univ', $anneeUniversitaire)->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+            ->where('annee_univ', $anneeUniversitaire)->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
         return response()->json([
             'status_code' => 200,
             'status_message' => 'les interventions de l\'université ont été récupérés',
@@ -159,7 +161,7 @@ class InterventionController extends Controller
         $professorId = Auth::id();
 
         // Récupérer le professeur en utilisant l'ID de l'utilisateur
-        $professeur = Enseignant::where('user_id', $professorId)->first();
+        $professeur = Enseignant::where('id_user', $professorId)->first();
 
         if (!$professeur) {
             // Gérer le cas où le professeur n'est pas trouvé
@@ -169,8 +171,8 @@ class InterventionController extends Controller
         $id_professeur = $professeur->id;
 
         // Récupérer les interventions du professeur
-        $interventions = Intervention::where('enseignant_id', $id_professeur)
-            ->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+        $interventions = Intervention::where('id_intervenant', $id_professeur)
+            ->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
 
         return response()->json($interventions, 200);
     }
@@ -184,10 +186,10 @@ class InterventionController extends Controller
         $professorcode = Auth::id();
 
         // Récupérer le professeur en utilisant le code de connexion
-        $professeur = Enseignant::where('user_id', $professorcode)->first();
+        $professeur = Enseignant::where('id_user', $professorcode)->first();
         $id_professeur = $professeur->id;
-        $interventions = Intervention::where('enseignant_id', $id_professeur)
-            ->where('etablissement_id', $id_etablissement)->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+        $interventions = Intervention::where('id_intervenant', $id_professeur)
+            ->where('id_etab', $id_etablissement)->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
 
         return response()->json([
             'status_code' => 200,
@@ -206,10 +208,10 @@ class InterventionController extends Controller
         $professorcode = Auth::id();
 
 
-        $professeur = Enseignant::where('user_id', $professorcode)->first();
+        $professeur = Enseignant::where('id_user', $professorcode)->first();
         $id_professeur = $professeur->id;
-        $interventions = Intervention::where('enseignant_id', $id_professeur)
-            ->where('annee__univ', $anneeUniversitaire)->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+        $interventions = Intervention::where('id_intervenant', $id_professeur)
+            ->where('annee_univ', $anneeUniversitaire)->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
 
         return response()->json([
             'status_code' => 200,
@@ -227,10 +229,10 @@ class InterventionController extends Controller
         //Administrateur Etablissement
         $admincode = Auth::id();
 
-        $admin = Administrateur::where('user_id', $admincode)->first();
+        $admin = Administrateur::where('id_user', $admincode)->first();
         $id_etablissement = $admin->etablissement_id;
-        $interventions = Intervention::where('etablissement_id', $id_etablissement)
-            ->where('enseignant_id', $id_professeur)->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+        $interventions = Intervention::where('id_etab', $id_etablissement)
+            ->where('id_intervenant', $id_professeur)->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
         return response()->json([
             'status_code' => 200,
             'status_message' => 'les interventions de l\'université ont été récupérés',
@@ -246,11 +248,11 @@ class InterventionController extends Controller
         $admincode = Auth::id();
 
 
-        $admin = Administrateur::where('user_id', $admincode)->first();
+        $admin = Administrateur::where('id_user', $admincode)->first();
 
         $id_etablissement = $admin->etablissement_id;
-        $interventions = Intervention::where('etablissement_id', $id_etablissement)
-            ->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+        $interventions = Intervention::where('id_etab', $id_etablissement)
+            ->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
 
         return response()->json([
             'status_code' => 200,
@@ -267,12 +269,12 @@ class InterventionController extends Controller
         $admincode = Auth::id();
 
 
-        $admin = Administrateur::where('user_id', $admincode)->first();
+        $admin = Administrateur::where('id_user', $admincode)->first();
 
         $id_etablissement = $admin->etablissement_id;
-        $interventions = Intervention::where('etablissement_id', $id_etablissement)
-            ->where('annee__univ', $anneeUniversitaire)
-            ->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+        $interventions = Intervention::where('id_etab', $id_etablissement)
+            ->where('annee_univ', $anneeUniversitaire)
+            ->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
         return response()->json([
             'status_code' => 200,
             'status_message' => 'les interventions de l\'université ont été récupérés',
@@ -288,13 +290,13 @@ class InterventionController extends Controller
         $admincode = Auth::id();
 
 
-        $admin = Administrateur::where('user_id', $admincode)->first();
+        $admin = Administrateur::where('id_user', $admincode)->first();
 
         $id_etablissement = $admin->etablissement_id;
-        $interventions = Intervention::where('etablissement_id', $id_etablissement)
-            ->where('annee__univ', $anneeUniversitaire)
+        $interventions = Intervention::where('id_etab', $id_etablissement)
+            ->where('annee_univ', $anneeUniversitaire)
             ->where('semestre', $semestre)
-            ->get(['id', 'intitule_intervention', 'annee__univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
+            ->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
 
         return response()->json([
             'status_code' => 200,
@@ -304,7 +306,7 @@ class InterventionController extends Controller
 
     }
 
-    
+
     public function store(Request $request)
     {
         if(!Gate::allows('role_admin_eta')) {
@@ -313,12 +315,12 @@ class InterventionController extends Controller
         $admincode = Auth::id();
 
 
-        $admin = Administrateur::where('user_id', $admincode)->first();
+        $admin = Administrateur::where('id_user', $admincode)->first();
 
-        $id_etablissement = $admin->etablissement_id;
+        $id_etablissement = $admin->etablissement;
         $data = $request->validate([
             'intitule_intervention' => 'required | string',
-            'annee__univ' => 'required | string',
+            'annee_univ' => 'required | string',
             'semestre' => 'required | string',
             'date_debut' => 'required | date',
             'date_fin' => 'required | date',
@@ -326,41 +328,47 @@ class InterventionController extends Controller
             'ppr_enseignant' => 'required | string'
         ]);
 
-        $intervenant = Enseignant::where('ppr' , $data['ppr_enseignant'])->first();
-        if($intervenant->etat){
-        $intervention = Intervention::create([
-            'intitule_intervention' => $data['intitule_intervention'],
-            'annee__univ' => $data['annee__univ'],
-            'semestre' => $data['semestre'],
-            'date_debut' => $data['date_debut'],
-            'date_fin' => $data['date_fin'],
-            'nbr_heures' => $data['nbr_heures'],
-            'etablissement_id' => $id_etablissement,
-            'enseignant_id' => $intervenant['id']
-        ]);
-        
-        return response()->json([
-            'status_code' => 200,
-            'status_message' => 'les interventions de l\'université ont été récupérés',
-            'data' => $intervention
-        ]);
-    }else{
+        $intervenant = Enseignant::where('ppr', $data['ppr_enseignant'])->first();
+        if ($intervenant->etat) {
+            $intervention = Intervention::create([
+                'intitule_intervention' => $data['intitule_intervention'],
+                'annee_univ' => $data['annee_univ'],
+                'semestre' => $data['semestre'],
+                'date_debut' => $data['date_debut'],
+                'date_fin' => $data['date_fin'],
+                'nbr_heures' => $data['nbr_heures'],
+                'id_etab' => $id_etablissement,
+                'id_intervenant' => $intervenant['id']
+            ]);
+
             return response()->json([
-            'status_code' => 200,
-            'status_message' => 'Ce professeur est supprimé',]);
+                'status_code' => 200,
+                'status_message' => 'les interventions de l\'université ont été récupérés',
+                'data' => $intervention
+            ]);
+        } else {
+            return response()->json([
+                'status_code' => 200,
+                'status_message' => 'Ce professeur est supprimé',
+            ]);
         }
 
     }
 
     public function update(Request $request, $id)
+<<<<<<< HEAD
     {   
         if(!Gate::allows('role_admin_eta')) {
             abort('403');
            }
         $intervention =Intervention::find($id); 
+=======
+    {
+        $intervention = Intervention::find($id);
+>>>>>>> ceab9a1c039aa975c5f127b3a5d686d327273733
         $data = $request->validate([
             'intitule_intervention' => 'required | string',
-            'annee__univ' => 'required | string',
+            'annee_univ' => 'required | string',
             'semestre' => 'required | string',
             'date_debut' => 'required | date',
             'date_fin' => 'required | date',
@@ -368,25 +376,25 @@ class InterventionController extends Controller
             'ppr_enseignant' => 'required | string'
         ]);
 
-        $intervenant = Enseignant::where('ppr' , $data['ppr_enseignant'])->first();
-        
+        $intervenant = Enseignant::where('ppr', $data['ppr_enseignant'])->first();
+
         $intervention->intitule_intervention = $data['intitule_intervention'];
-        $intervention->annee__univ = $data['annee__univ'];
+        $intervention->annee_univ = $data['annee_univ'];
         $intervention->semestre = $data['semestre'];
         $intervention->date_debut = $data['date_debut'];
         $intervention->date_fin = $data['date_fin'];
         $intervention->nbr_heures = $data['nbr_heures'];
-        $intervention->enseignant_id = $intervenant->id;
-        
+        $intervention->id_intervenant = $intervenant->id;
+
         $intervention->save();
-        
+
         return response()->json([
             'status_code' => 200,
             'status_message' => 'modifié avec succès',
             'data' => $intervention
         ]);
-            
-        } 
+
+    }
 
 
     public function Valider_By_Directeur($id)

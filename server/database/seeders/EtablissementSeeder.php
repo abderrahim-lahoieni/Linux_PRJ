@@ -18,47 +18,47 @@ class EtablissementSeeder extends Seeder
         Etablissement::create([
             'code' => 'ETAB001',
             'nom' => 'Faculté des lettres et des sciences humaines',
-            'num_tel' => '+212539979053',
+            'telephone' => '+212539979053',
             'faxe' => '+212539979128',
             'ville' => 'Martil',
-            'nbre_enseignant' => 66,
+            'nbr_enseignants' => 66,
             'etat' => 'true'
         ]);
 
         Etablissement::create([
             'code' => 'ETAB002',
             'nom' => 'Faculté des sciences et techniques',
-            'num_tel' =>'+212539393954',
+            'telephone' =>'+212539393954',
             'faxe' =>'+212539393953',
-            'nbre_enseignant' => 90,
+            'nbr_enseignants' => 90,
             'etat' => 'true'
         ]);
      
         Etablissement::create([
             'code' => 'ETAB003',
             'nom' => 'Ecole nationale des sciences appliquées',
-            'num_tel' =>'',
+            'telephone' =>'',
             'faxe' =>'+212539393744',
-            'nbre_enseignant' => 74 ,
+            'nbr_enseignants' => 74 ,
             'etat' => 'true'
         ]);
         Etablissement::create([
             'code' => 'ETAB004',
             'nom' => 'Ecole nationale des sciences appliquées',
-            'num_tel' =>'+212539805712',
+            'telephone' =>'+212539805712',
             'faxe' =>'+212539805713',
             'ville' => 'AL-Hoceima',
-            'nbre_enseignant' => 50,
+            'nbr_enseignants' => 50,
             'etat' => 'true'
         ]);
       
         Etablissement::create([
             'code' => 'ETAB005',
             'nom' => 'Ecole nationalede commerce et de gestion de Tanger',
-            'num_tel' =>'+212539313487',
+            'telephone' =>'+212539313487',
             'faxe' =>'+212539313488',
             'ville' => 'AL-Hoceima',
-            'nbre_enseignant' => 70,
+            'nbr_enseignants' => 70,
             'etat' => 'true'
         ]);
         
@@ -66,10 +66,10 @@ class EtablissementSeeder extends Seeder
         Etablissement::create([
             'code' => 'ETAB006',
             'nom' => 'Faculté polydisciplinaire',
-            'num_tel' =>'+212539523960',
+            'telephone' =>'+212539523960',
             'faxe' =>'+212539523961',
             'ville' => 'Larache',
-            'nbre_enseignant' => 88,
+            'nbr_enseignants' => 88,
             'etat' => 'true'
         ]);
 

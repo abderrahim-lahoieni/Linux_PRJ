@@ -14,6 +14,16 @@ use Exception;
 class EnseignantController extends Controller
 {
 
+    public function index()
+    {
+        $enseignant = Enseignant::all();
+        return response()->json([
+            'status_code' => 200,
+            'items' => $enseignant
+        ]);
+    }
+
+
     //affichage des informations
     public function show($id)
     { if(!Gate::any(['role_admin_eta', 'role_directeur','role_president'])) {
@@ -30,20 +40,21 @@ class EnseignantController extends Controller
 
     public function Profile()
     {
+
         if(!Gate::allows('role_enseignant')) {
             abort('403');
            }
         $professorcode =Auth::id();
 
-        $professeur = Enseignant::where('user_id', $professorcode)->first();
+        $professeur = Enseignant::where('id_user', $professorcode)->first();
         $id_professeur = $professeur->id;
-        $enseignant = Enseignant::findOrFail( $id_professeur);
+        $enseignant = Enseignant::findOrFail($id_professeur);
         return response()->json([
-            'status_code' => 200 ,
+            'status_code' => 200,
             'items' => $enseignant
         ]);
-   
-   }
+
+    }
 
     public function AffichageAll_President()
     {
@@ -57,6 +68,7 @@ class EnseignantController extends Controller
         ]);
 
     }
+
     public function AffichagebyEtablissement_President($id_etablissement)
     {
         if(!Gate::allows('role_president')) {
@@ -69,7 +81,7 @@ class EnseignantController extends Controller
         ]);
 
     }
-    
+
     //Pour Directeur et administrateur etablissement
     public function Affichage_Administrateur()
     {
@@ -77,9 +89,9 @@ class EnseignantController extends Controller
             abort('403');
            }
         $Admin = Auth::id();
-        $Administrateur = Administrateur::where('user_id', $Admin)->first();
+        $Administrateur = Administrateur::where('id_user', $Admin)->first();
         $id_etablissement = $Administrateur->etablissement_id;
-        $enseignant = Enseignant::where('etablissement_id', $id_etablissement)->get();
+        $enseignant = Enseignant::where('etablissement', $id_etablissement)->get();
         return response()->json([
             'status_code' => 200,
             'items' => $enseignant
@@ -95,7 +107,7 @@ class EnseignantController extends Controller
 
         $enseignant = Enseignant::find($id);
         // changer l'etat 
-        $enseignant->etat=false;
+        $enseignant->etat = false;
 
         $enseignant->save();
 
@@ -119,8 +131,8 @@ class EnseignantController extends Controller
         $Admin = Auth::id();
 
         // Récupérer le professeur en utilisant le code de connexion
-        $Administrateur = Administrateur::where('user_id', $Admin)->first();
-        $id_etablissement = $Administrateur->etablissement_id;
+        $Administrateur = Administrateur::where('id_user', $Admin)->first();
+        $id_etablissement = $Administrateur->etablissement;
         //Validate data coming from the user
         $fields = $request->validate([
             'nom' => 'required | string',
@@ -128,45 +140,47 @@ class EnseignantController extends Controller
             'ppr' => 'required | string',
 
             'date_naissance' => 'required | string',
-            'telephone' => 'required | string',
             'email' => 'required | string |unique:users,email',
             'password' => 'required | string|min:8 |confirmed',
             'designation' => 'required | string',
             'etat' => 'required'
         ]);
         $userExists = User::where('email', $fields['email'])->exists();
-        
-    if (!$userExists) {
-        $user = User::create([
-            'name' => $fields['nom'],
-            'email' => $fields['email'],
-            'password' => bcrypt($fields['password']),
-            'type' => 'Enseignant'
-        ]);
 
-        $grade = Grade::where('designation', $request['designation'])->first();
-        $id_grade = $grade->id;
-        $Enseignant = Enseignant::create([
-            'nom' => $fields['nom'],
-            'prenom' => $fields['prenom'],
-            'ppr' => $fields['ppr'],
+        if (!$userExists) {
+            $user = User::create([
+                'email' => $fields['email'],
+                'password' => bcrypt($fields['password']),
+                'type' => 'Enseignant'
+            ]);
 
-            'date_naissance' => $fields['date_naissance'],
-            'telephone' => $fields['telephone'],
-            'etablissement_id' => $id_etablissement,
-            'grade_id' => $id_grade,
-            'user_id' => $user['id'],
-            'etat' => $fields['etat']
-        ]);
+            $grade = Grade::where('designation', $request['designation'])->first();
+            $id_grade = $grade->id;
+            $Enseignant = Enseignant::create([
+                'nom' => $fields['nom'],
+                'prenom' => $fields['prenom'],
+                'ppr' => $fields['ppr'],
 
-        return response()->json([
-            'items' => $Enseignant
-        ]);}else{
-           $enseignant=Enseignant::where('user_id',$userExists->id);
-          $enseignant->etat=false;
+                'date_naissance' => $fields['date_naissance'],
+                'etablissement' => $id_etablissement,
+                'id_grade' => $id_grade,
+                'id_user' => $user['id'],
+                'etat' => $fields['etat']
+            ]);
 
+            return response()->json([
+                'items' => $Enseignant
+            ]);
+        } else {
+            //$enseignant = Enseignant::where('user_id', $userExists->id);
+            //$enseignant->etat = false;
+            return response()->json([
+                'erreur' => 'Enseignant déjà existant'
+            ]);
         }
     }
+    
+    //Enseignant change son profile 
     public function update_profile(Request $request)
     {
         if(!Gate::allows('role_enseignant')) {
@@ -179,19 +193,19 @@ class EnseignantController extends Controller
             'nom' => 'required|string',
             'prenom' => 'required|string',
             'ppr' => 'required|string',
-           
+            'date_naissance' => 'required | date'
         ]);
-    
 
-        $Enseignant1->nom = $fields['nom'];
-        $Enseignant1->prenom = $fields['prenom'];
-        $Enseignant1->ppr = $fields['ppr'];
-       
-    
-        $Enseignant1->save();
-    
-        return response()->json(['message' => 'Votre INformations sont  mises à jour avec succès'], 200);
+        $Enseignant->nom = $fields['nom'];
+        $Enseignant->prenom = $fields['prenom'];
+        $Enseignant->ppr = $fields['ppr'];
+        $Enseignant->date_naissance = $fields['date_naissance'];
+
+        $Enseignant->save();
+
+        return response()->json(['message' => 'Votre Informations sont mises à jour avec succès'], 200);
     }
+
     public function update(Request $request, $id)
     { 
          if(!Gate::allows('role_admin_eta')) {
@@ -201,8 +215,7 @@ class EnseignantController extends Controller
             'nom' => 'required|string',
             'prenom' => 'required|string',
             'ppr' => 'required|string',
-            'date_naissance' => 'required|string',
-            'telephone' => 'required|string',
+            'date_naissance' => 'required|string'
         ]);
 
         $enseignant = Enseignant::findOrFail($id);
@@ -210,31 +223,27 @@ class EnseignantController extends Controller
         $enseignant->prenom = $fields['prenom'];
         $enseignant->ppr = $fields['ppr'];
         $enseignant->date_naissance = $fields['date_naissance'];
-        $enseignant->telephone = $fields['telephone'];
 
         $enseignant->save();
 
         return response()->json(['message' => 'Informations personnelles de l\'enseignant mises à jour avec succès'], 200);
     }
-
     public function changer_etablissement(Request $request, $id)
     {    if(!Gate::allows('role_admin_univ')) {
         abort('403');
        }
 
         $fields = $request->validate([
-           
-                'nom'=>'required | string',
-                'ville'=>'required | string',
+
+            'nom' => 'required | string',
+            'ville' => 'required | string',
         ]);
         $etablissement=Etablissement::where('nom',$required['nom'])->where('ville',$required['ville'])->first();
         $enseignant = Enseignant::findOrFail($id);
-        $enseignant->id_etablissemen= $etablissement->id;
-       
-     
-    
+        $enseignant->etablissement = $etablissement->id;
+        
         $enseignant->save();
-    
+
         return response()->json(['message' => 'Etablissement changé'], 200);
     }
 }

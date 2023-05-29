@@ -16,7 +16,17 @@ class Paiement extends Model
         'net',
         'annee_univ',
         'semestre',
-        'enseignant_id',
-        'etablissement_id'
+        'id_intervenant',
+        'id_etab'
     ];
+
+    public function Etablissement()
+    {
+        return $this->belongsTo(Etablissement::class); 
+    }
+
+    public function User()
+    {
+        return $this->belongsTo(User::class); 
+    }
 }

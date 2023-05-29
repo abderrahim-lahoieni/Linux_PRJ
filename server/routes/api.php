@@ -85,6 +85,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Route pour créer une nouvelle intervention
 
     Route::get('/enseignants', [EnseignantController::class, 'Profile']);
+    Route::get('administrateur/enseignants', [EnseignantController::class, 'index']);
     Route::get('/directeur/enseignants', [EnseignantController::class, 'Affichage_Administrateur']);
     Route::get('/administrateur/enseignants', [EnseignantController::class, 'Affichage_Administrateur']);
     

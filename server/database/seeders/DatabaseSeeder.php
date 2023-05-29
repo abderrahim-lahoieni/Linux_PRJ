@@ -20,14 +20,13 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         
-        
-        User::factory(20)->create();
-        
         DB::table('users')->insert([
             'email' => 'achanaa999@gmail.com',
             'password' => Hash::make('123456'),
             'type' => 'Administrateur'
         ]);
+        
+        User::factory(20)->create();
         
         DB::table('users')->insert([
             'email' => 'achraf99@gmail.com',

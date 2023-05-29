@@ -14,7 +14,7 @@ return new class extends Migration
     //Create table interventions
     public function up(): void
     {
-        Schema::create('Intervention', function (Blueprint $table) {
+        Schema::create('interventions', function (Blueprint $table) {
             $table->id();
             $table->string('intitule_intervention');
             $table->string('annee_univ');
@@ -24,8 +24,8 @@ return new class extends Migration
             $table->integer('nbr_heures')->default(0);
             $table->unsignedBigInteger('id_intervenant');
             $table->unsignedBigInteger('id_etab');
-            $table->foreign('id_intervenant')->references('id')->on('Enseignant')->onDelete('cascade');
-            $table->foreign('id_etab')->references('id')->on('Etablissement')->onDelete('cascade');
+            $table->foreign('id_intervenant')->references('id')->on('enseignants')->onDelete('cascade');
+            $table->foreign('id_etab')->references('id')->on('etablissements')->onDelete('cascade');
             $table->boolean('visa_etb')->default('false')->nullable();
             $table->boolean('visa_uae')->default('false')->nullable();
             $table->timestamps();
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('Intervention');
+        Schema::dropIfExists('interventions');
     }
 };

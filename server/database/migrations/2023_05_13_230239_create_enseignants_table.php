@@ -13,7 +13,7 @@ return new class extends Migration
      //Create table enseignants
     public function up(): void
     {
-        Schema::create('Enseignant', function (Blueprint $table) {
+        Schema::create('enseignants', function (Blueprint $table) {
             $table->id();
             $table->string('ppr')->unique;
             $table->string('nom');
@@ -22,10 +22,9 @@ return new class extends Migration
             $table->unsignedBigInteger('etablissement');
             $table->unsignedBigInteger('id_grade');
             $table->unsignedBigInteger('id_user');
-            $table->boolean('etat');
-            $table->foreign('etablissement')->references('id')->on('Etablissement')->onDelete('cascade');
-            $table->foreign('id_grade')->references('id')->on('Grade')->onDelete('cascade');
-            $table->foreign('id_user')->references('id')->on('Users')->cascadeOnDelete();
+            $table->foreign('etablissement')->references('id')->on('etablissements')->onDelete('cascade');
+            $table->foreign('id_grade')->references('id')->on('grades')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -35,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('Enseignant');
+        Schema::dropIfExists('enseignants');
     }
 };

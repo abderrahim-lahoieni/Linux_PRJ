@@ -14,7 +14,7 @@ return new class extends Migration
     ////Create table grades
     public function up(): void
     {
-        Schema::create('Grade', function (Blueprint $table) {
+        Schema::create('grades', function (Blueprint $table) {
             $table->id();
             $table->string('designation');
             $table->integer('charge_statutaire');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('Grade');
+        Schema::dropIfExists('grades');
     }
 };

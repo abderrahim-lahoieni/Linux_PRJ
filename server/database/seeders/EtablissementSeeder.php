@@ -22,7 +22,7 @@ class EtablissementSeeder extends Seeder
             'faxe' => '+212539979128',
             'ville' => 'Martil',
             'nbr_enseignants' => 66,
-            'etat' => 'true'
+            'etat' => true
         ]);
 
         Etablissement::create([
@@ -31,7 +31,7 @@ class EtablissementSeeder extends Seeder
             'telephone' =>'+212539393954',
             'faxe' =>'+212539393953',
             'nbr_enseignants' => 90,
-            'etat' => 'true'
+            'etat' => true
         ]);
      
         Etablissement::create([
@@ -40,7 +40,7 @@ class EtablissementSeeder extends Seeder
             'telephone' =>'',
             'faxe' =>'+212539393744',
             'nbr_enseignants' => 74 ,
-            'etat' => 'true'
+            'etat' => true
         ]);
         Etablissement::create([
             'code' => 'ETAB004',
@@ -49,7 +49,7 @@ class EtablissementSeeder extends Seeder
             'faxe' =>'+212539805713',
             'ville' => 'AL-Hoceima',
             'nbr_enseignants' => 50,
-            'etat' => 'true'
+            'etat' => true
         ]);
       
         Etablissement::create([
@@ -59,7 +59,7 @@ class EtablissementSeeder extends Seeder
             'faxe' =>'+212539313488',
             'ville' => 'AL-Hoceima',
             'nbr_enseignants' => 70,
-            'etat' => 'true'
+            'etat' => true
         ]);
         
 
@@ -70,7 +70,7 @@ class EtablissementSeeder extends Seeder
             'faxe' =>'+212539523961',
             'ville' => 'Larache',
             'nbr_enseignants' => 88,
-            'etat' => 'true'
+            'etat' => true
         ]);
 
         // Ajoutez d'autres enregistrements d'établissements si nécessaire

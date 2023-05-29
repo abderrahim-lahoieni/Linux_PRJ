@@ -13,7 +13,7 @@ return new class extends Migration
      //Create table paiements
     public function up(): void
     {
-        Schema::create('Paiement', function (Blueprint $table) {
+        Schema::create('paiements', function (Blueprint $table) {
             $table->id();
             $table->string('vh'); //Volume horaire 
             $table->integer('taux_h');//Taux Horaire
@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('semestre');
             $table->unsignedBigInteger('id_intervenant');
             $table->unsignedBigInteger('id_etab');
-            $table->foreign('id_intervenant')->references('id')->on('Enseignant')->onDelete('cascade');
-            $table->foreign('id_etab')->references('id')->on('Etablissement')->onDelete('cascade');
+            $table->foreign('id_intervenant')->references('id')->on('enseignants')->onDelete('cascade');
+            $table->foreign('id_etab')->references('id')->on('etablissements')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('Paiement');
+        Schema::dropIfExists('paiements');
     }
 };

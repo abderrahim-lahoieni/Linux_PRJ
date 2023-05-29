@@ -109,6 +109,10 @@ Route::post('/login', [AuthController::class, 'login']);
  // Route pour mettre à jour une intervention existante
  Route::put('/interventions/edit/{id}', [InterventionController::class, 'update']);
 
+//forget Password
+
+Route::post('/forgotPassword',[AuthController::class , 'forgotPassword']);
+Route::post('/resetPassword',[AuthController::class , 'resetPassword']);
 
 //Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {

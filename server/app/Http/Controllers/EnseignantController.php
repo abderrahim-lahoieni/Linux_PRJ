@@ -130,7 +130,7 @@ class EnseignantController extends Controller
             'date_naissance' => 'required | string',
             'telephone' => 'required | string',
             'email' => 'required | string |unique:users,email',
-            'password' => 'required | string |confirmed',
+            'password' => 'required | string|min:8 |confirmed',
             'designation' => 'required | string',
             'etat' => 'required'
         ]);
@@ -169,6 +169,9 @@ class EnseignantController extends Controller
     }
     public function update_profile(Request $request)
     {
+        if(!Gate::allows('role_enseignant')) {
+            abort('403');
+           }
         $Enseignant=Auth::id();
         $Enseignant1=Enseignant::where('id',$Enseignant)->first();
 
@@ -190,7 +193,10 @@ class EnseignantController extends Controller
         return response()->json(['message' => 'Votre INformations sont  mises à jour avec succès'], 200);
     }
     public function update(Request $request, $id)
-    {   if (Gate::allows('role_admin_eta') || (Gate::allows('role_enseignant') && $id == Auth::id())) {
+    { 
+         if(!Gate::allows('role_admin_eta')) {
+        abort('403');
+       }
         $fields = $request->validate([
             'nom' => 'required|string',
             'prenom' => 'required|string',
@@ -210,15 +216,18 @@ class EnseignantController extends Controller
 
         return response()->json(['message' => 'Informations personnelles de l\'enseignant mises à jour avec succès'], 200);
     }
-<<<<<<< HEAD
+
     public function changer_etablissement(Request $request, $id)
-    {
+    {    if(!Gate::allows('role_admin_univ')) {
+        abort('403');
+       }
+
         $fields = $request->validate([
            
                 'nom'=>'required | string',
                 'ville'=>'required | string',
         ]);
-        $etablissement=Administrateur::where('nom',$required['nom'])->where('ville',$required['ville'])->first();
+        $etablissement=Etablissement::where('nom',$required['nom'])->where('ville',$required['ville'])->first();
         $enseignant = Enseignant::findOrFail($id);
         $enseignant->id_etablissemen= $etablissement->id;
        
@@ -228,13 +237,7 @@ class EnseignantController extends Controller
     
         return response()->json(['message' => 'Etablissement changé'], 200);
     }
-=======
-    else {
-        // L'utilisateur n'a pas le rôle 'role_admin_eta' ou l'ID du compte à modifier
-        // n'est pas égal à l'ID de l'utilisateur connecté
-        // Interdire la modificationd'un autre compte
-        abort(403); }
-    }
 }
->>>>>>> daef3291be2ec3a9d92741443420a5be3fc799fa
+   
+
 

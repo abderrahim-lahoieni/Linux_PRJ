@@ -25,7 +25,7 @@ class AuthController extends Controller
             [
                 'name' => 'required',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required',
+                'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
                 'type' => 'required'
             ]);
 
@@ -62,8 +62,8 @@ class AuthController extends Controller
     {
         //Validate data coming from user
         $fields = $request->validate([
-            'email' => 'required | string ',
-            'password' => 'required | string '
+            'email' => 'required | email ',
+            'password' => 'required | string|min:8 '
         ]);
 
         //Check email

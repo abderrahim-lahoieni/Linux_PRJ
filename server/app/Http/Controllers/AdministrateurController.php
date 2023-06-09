@@ -17,8 +17,11 @@ class EnseignantController extends Controller
 
     //affichage des informations
     public function show($id)
-    {
+    {  if(!Gate::any(['role_admin_eta', 'role_admin_univ']) ) {
+        abort('403');
+    }
         $Admin = Administrateur::findOrFail($id);
+
         return response()->json([
             'status_code' => 200,
             'items' => $Admin
@@ -27,10 +30,14 @@ class EnseignantController extends Controller
     }
     public function Profile()
     {
-
-        $Admincode = Auth::id();
-
-        $Admin = Administrateur::where('id_user', $Admincode)->first();
+        if(!Gate::any(['role_admin_eta', 'role_directeur']) ) {
+            abort('403');
+           }
+    
+       
+        $Admincode =Auth::id();
+       
+        $Admin = Administrateur::where('user_id', $Admincode)->first();
         $id_Admin = $Admin->id;
         $Administrateur = Administrateur::findOrFail($id_Admin);
         return response()->json([
@@ -40,8 +47,11 @@ class EnseignantController extends Controller
 
     }
     public function AffichageAll_President()
-    {
-        $enseignant = Administrateur::all();
+    {   
+        if(!Gate::allows('role_president')) {
+            abort('403');
+               }
+        $enseignant =Administrateur::all();
         return response()->json([
             'status_code' => 200,
             'items' => $enseignant
@@ -49,8 +59,11 @@ class EnseignantController extends Controller
 
     }
     public function AffichagebyEtablissement_President($id_etablissement)
-    {
-        $administrateur = Administrateur::where('Etablissement', $id_etablissement)->first();
+    {   
+         if(!Gate::allows('role_president')) {
+        abort('403');
+          }
+        $administrateur =Administrateur::where('etablissement_id',$id_etablissement)->first();
         return response()->json([
             'status_code' => 200,
             'items' => $administrateur
@@ -59,21 +72,12 @@ class EnseignantController extends Controller
     }
 
 
-    // Suppression d'un Administrateur
-    public function destroy($id)
-    {
-        $admin = Administrateur::findOrFail($id);
-
-        $admin->delete();
-
-        return response()->json([
-            'message' => 'L\'administrateur a été supprimé avec succès'
-        ]);
-    }
-
     public function store_Administrateur_Etablissement(Request $request)
     {
 
+        if(!Gate::allows('role_admin_univ')) {
+            abort('403');
+           }
 
         //Validate data coming from the user
         $fields = $request->validate([
@@ -83,8 +87,8 @@ class EnseignantController extends Controller
             'nom_etablissement' => 'required |string',
             'ville' => 'required |`string',
             'email' => 'required | string |unique:users,email',
-            'password' => 'required | string |confirmed',
-
+            'password' => 'required | string |min:8|confirmed',
+            
         ]);
 
 
@@ -95,18 +99,44 @@ class EnseignantController extends Controller
             'password' => bcrypt($fields['password']),
             'type' => 'Administrateur_Etablissement'
         ]);
-        $Etablissement = Etablissement::where('nom', $fields['nom_etablissement'])->where('ville', $fields['ville'])->first();
+
+        $Etablissement=Etablissemnt::where('nom',$fields['nom_etablissement'])->where('ville',$fields['ville'])->first();
         $id_etablissement = $Etablissement->id;
-        $Administrateur = Administrateur::create([
+        $Administrateur =Administrateur::create([
+       
             'nom' => $fields['nom'],
             'prenom' => $fields['prenom'],
             'ppr' => $fields['ppr'],
-
-
             'Etablissement' => $id_etablissement,
-
             'id_user' => $user['id'],
         ]);
+
+            return response()->json([
+                'status_code' => 200,
+                'items' => $Administrateur
+            ]);
+    }
+      
+    
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        if(!Gate::any(['role_admin_eta', 'role_admin_univ']) ) {
+            abort('403');
+           }
+            
+        $admin = Administrateur::find($id);
+        // Supprimez l'enseignant de la table "enseignant"
+        $admin->delete();
+        
+        // Supprimez également l'utilisateur associé de la table "users"
+        //Trigger 
+        $user = $admin->user_id;
+        $user1 = User::where('id', $user)->first();
+        $user1->delete();
 
         return response()->json([
             'status_code' => 200,
@@ -118,9 +148,11 @@ class EnseignantController extends Controller
 
     //Create un Administrateur
     public function store_Directeur(Request $request)
-    {
-
-        $Admin = Auth::id();
+    {     
+        if(!Gate::allows('role_admin_eta')) {
+            abort('403');
+           }
+        $Admin =Auth::id();
 
         // Récupérer l'Administrateur en utilisant le code de connexion
         $Administrateur = Administrateur::where('id_user', $Admin)->first();
@@ -133,8 +165,8 @@ class EnseignantController extends Controller
 
 
             'email' => 'required | string |unique:users,email',
-            'password' => 'required | string |confirmed',
-
+            'password' => 'required | string |min:8|confirmed',
+            
         ]);
 
 
@@ -164,6 +196,11 @@ class EnseignantController extends Controller
     }
     public function update_profile(Request $request)
     {
+        if(!Gate::any(['role_admin_eta', 'role_directeur']) ) {
+            abort('403');
+           }
+        $admin=Auth::id();
+        $administrateur=Administrateur::where('id',$admin)->first();
         $admin = Auth::id();
         $Administrateur = Administrateur::where('id', $admin)->first();
 
@@ -186,6 +223,9 @@ class EnseignantController extends Controller
     }
     public function update(Request $request, $id)
     {
+        if(!Gate::any(['role_admin_eta', 'role_admin_univ']) ) {
+            abort('403');
+           }
         $fields = $request->validate([
             'nom' => 'required|string',
             'prenom' => 'required|string',
@@ -206,6 +246,9 @@ class EnseignantController extends Controller
 
     public function changer_etablissement(Request $request, $id)
     {
+        if(!Gate::allows('role_admin_univ')) {
+            abort('403');
+           }
         $fields = $request->validate([
 
             'nom' => 'required | string',

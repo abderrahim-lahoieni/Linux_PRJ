@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Auth;
 class InterventionController extends Controller
 {
     public function getAllInterventions_By_President()
-    {
+    { if(!Gate::allows('role_president')) {
+        abort('403');
+       }
         $interventions = Intervention::where('visa_etb', 1)
             ->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
 
@@ -26,6 +28,9 @@ class InterventionController extends Controller
 
     public function getInterventionsByEtablissement_By_President($id_etablissement)
     {
+        if(!Gate::allows('role_president')) {
+            abort('403');
+           }
         $interventions = Intervention::where('visa_etb', 1)
             ->where('id_etab', $id_etablissement)->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
         return response()->json([
@@ -38,6 +43,9 @@ class InterventionController extends Controller
 
     public function getInterventionsByenseignant_By_President($id_enseignant)
     {
+        if(!Gate::allows('role_president')) {
+            abort('403');
+           }
         $interventions = Intervention::where('visa_etb', 1)
             ->where('id_intervenant', $id_enseignant)->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
         $enseignant =Enseignant::where('id_user',$interventions->id_intervenant) ;
@@ -51,6 +59,9 @@ class InterventionController extends Controller
 
     public function getInterventionsByAnnee_By_President($anneeUniversitaire)
     {
+        if(!Gate::allows('role_president')) {
+            abort('403');
+           }
         $interventions = Intervention::where('visa_etb', 1)
             ->where('annee_univ', $anneeUniversitaire)->get(['id', 'intitule_intervention', 'annee_univ', 'semestre', 'date_debut', 'date_fin', 'nbr_heures']);
         return response()->json([
@@ -140,6 +151,9 @@ class InterventionController extends Controller
 
     public function getAllInterventions_By_Enseignant()
     {
+        if(!Gate::allows('role_enseignant')) {
+            abort('403');
+           }
         // Vérifier l'authentification avec le middleware
         // $this->middleware('auth:sanctum');
 
@@ -166,6 +180,9 @@ class InterventionController extends Controller
 
     public function getInterventionsByEtablissement_By_Enseignant($id_etablissement)
     {
+        if(!Gate::allows('role_enseignant')) {
+            abort('403');
+           }
         $professorcode = Auth::id();
 
         // Récupérer le professeur en utilisant le code de connexion
@@ -185,6 +202,9 @@ class InterventionController extends Controller
 
     public function getInterventionsByAnnee_By_Enseignant($anneeUniversitaire)
     {
+        if(!Gate::allows('role_enseignant')) {
+            abort('403');
+           }
         $professorcode = Auth::id();
 
 
@@ -203,6 +223,9 @@ class InterventionController extends Controller
 
     public function getInterventionsByProfesseur_By_Administrateur($id_professeur)
     {
+        if(!Gate::allows('role_admin_eta')) {
+            abort('403');
+           }
         //Administrateur Etablissement
         $admincode = Auth::id();
 
@@ -219,6 +242,9 @@ class InterventionController extends Controller
 
     public function getAllInterventions_By_Administrateur()
     {
+        if(!Gate::allows('role_admin_eta')) {
+            abort('403');
+           }
         $admincode = Auth::id();
 
 
@@ -237,6 +263,9 @@ class InterventionController extends Controller
 
     public function getInterventionsByAnnee_By_Administrateur($anneeUniversitaire)
     {
+        if(!Gate::allows('role_admin_eta')) {
+            abort('403');
+           }
         $admincode = Auth::id();
 
 
@@ -255,6 +284,9 @@ class InterventionController extends Controller
 
     public function getInterventionsBySemestre_By_Administrateur($anneeUniversitaire, $semestre)
     {
+        if(!Gate::allows('role_admin_eta')) {
+            abort('403');
+           }
         $admincode = Auth::id();
 
 
@@ -277,6 +309,9 @@ class InterventionController extends Controller
 
     public function store(Request $request)
     {
+        if(!Gate::allows('role_admin_eta')) {
+            abort('403');
+           }
         $admincode = Auth::id();
 
 
@@ -321,8 +356,16 @@ class InterventionController extends Controller
     }
 
     public function update(Request $request, $id)
+<<<<<<< HEAD
+    {   
+        if(!Gate::allows('role_admin_eta')) {
+            abort('403');
+           }
+        $intervention =Intervention::find($id); 
+=======
     {
         $intervention = Intervention::find($id);
+>>>>>>> ceab9a1c039aa975c5f127b3a5d686d327273733
         $data = $request->validate([
             'intitule_intervention' => 'required | string',
             'annee_univ' => 'required | string',
@@ -356,6 +399,9 @@ class InterventionController extends Controller
 
     public function Valider_By_Directeur($id)
     {
+        if(!Gate::allows('role_directeur')) {
+            abort('403');
+           }
         $intervention = Intervention::findOrFail($id);
         $intervention->visa_etb = 'true';
         $intervention->save();
@@ -367,6 +413,9 @@ class InterventionController extends Controller
 
     public function Non_Valider_By_Directeur($id)
     {
+        if(!Gate::allows('role_directeur')) {
+            abort('403');
+           }
         $intervention = Intervention::findOrFail($id);
         $intervention->visa_etb = 'false';
         $intervention->save();
@@ -378,6 +427,9 @@ class InterventionController extends Controller
 
     public function Valider_By_President($id)
     {
+        if(!Gate::allows('role_president')) {
+            abort('403');
+           }
         $intervention = Intervention::findOrFail($id);
         $intervention->visa_uae = 'true';
         $intervention->save();
@@ -390,6 +442,9 @@ class InterventionController extends Controller
     }
     public function Non_Valider_By_President($id)
     {
+        if(!Gate::allows('role_president')) {
+            abort('403');
+           }
         $intervention = Intervention::findOrFail($id);
         $intervention->visa_uae = 'false';
         $intervention->save();
@@ -403,6 +458,9 @@ class InterventionController extends Controller
 
     public function destroy($id)
     {
+        if(!Gate::allows('role_admin_eta')) {
+            abort('403');
+           }
         $intervention = Intervention::findOrFail($id);
         $intervention->delete();
         return response()->json([

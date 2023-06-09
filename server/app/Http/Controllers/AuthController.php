@@ -20,6 +20,7 @@ class AuthController extends Controller
 {
 
     public function register(Request $request)
+<<<<<<< HEAD
     {
         try {
             //Validated
@@ -31,6 +32,21 @@ class AuthController extends Controller
                     'type' => 'required'
                 ]
             );
+=======
+    {  
+        //pour creer un president dans la table user
+         if(!Gate::allows('role_admin_univ')) {
+        abort('403');
+       }
+        try {
+            //Validated
+            $validateUser = Validator::make($request->all(), 
+            [
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
+                'type' => 'required'
+            ]);
+>>>>>>> 8a44fd8bc024227dd468fd39dd2dd2f5cfd1b1e6
 
             if ($validateUser->fails()) {
                 return response()->json([
@@ -64,8 +80,8 @@ class AuthController extends Controller
     {
         //Validate data coming from user
         $fields = $request->validate([
-            'email' => 'required | string ',
-            'password' => 'required | string '
+            'email' => 'required | email ',
+            'password' => 'required | string|min:8 '
         ]);
 
         //Check email

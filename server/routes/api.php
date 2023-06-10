@@ -76,45 +76,59 @@ Route::post('/login', [AuthController::class, 'login']);
 
 //forget Password
 
-Route::post('/forgotPassword',[AuthController::class , 'forgotPassword']);
-Route::post('/resetPassword',[AuthController::class , 'resetPassword']);
+Route::post('/forgotPassword', [AuthController::class, 'forgotPassword']);
+Route::post('/resetPassword', [AuthController::class, 'resetPassword']);
 
 //Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
+
+    Route::get('/administrateurs/{id}', [AdministrateurController::class, 'show']);
+
+    Route::post('/register', [AuthController::class, 'register']);
 
     //Put your routes here, Just that's need from the user to be connected
     Route::post('/logout', [AuthController::class, 'logout']);
 
 
+    Route::post('/administrateur_univ/create/administrateur_etb', [AdministrateurController::class, 'store_Administrateur_Etablissement']);
+    Route::post('/administrateur_etb/create/directeur', [AdministrateurController::class, 'store_Directeur']);
+    
+    Route::get('/administrateur_etb', [AdministrateurController::class, 'Profile']);
+    Route::get('/directeur', [AdministrateurController::class, 'Profile']);
+    //Route::get('/administrateurs/{id}', [AdministrateurController::class, 'show']);
+    Route::delete('/administrateur_univ/administrateur_etb/{id}', [AdministrateurController::class, 'destroy']);
+    Route::delete('/administrateur_etb/directeur/{id}', [AdministrateurController::class, 'destroy']);
     // Route pour créer une nouvelle intervention
 
     Route::get('/enseignants', [EnseignantController::class, 'Profile']);
     Route::get('administrateur/enseignants', [EnseignantController::class, 'index']);
     Route::get('/directeur/enseignants', [EnseignantController::class, 'Affichage_Administrateur']);
     Route::get('/administrateur/enseignants', [EnseignantController::class, 'Affichage_Administrateur']);
-    
+
 });
 
 
 Route::middleware('check.role:role_president')->group(function () {
     // Route pour valider une intervention par le président
-     Route::put('/president/interventions/valider/{id}', [InterventionController::class, 'Valider_By_President']);
+    Route::put('/president/interventions/valider/{id}', [InterventionController::class, 'Valider_By_President']);
 
     // Route pour invalider une intervention par le président
-     Route::put('/president/interventions/non_valider/{id}', [InterventionController::class, 'Non_Valider_By_President']);
+    Route::put('/president/interventions/non_valider/{id}', [InterventionController::class, 'Non_Valider_By_President']);
 
     Route::get('/president/enseignants', [EnseignantController::class, 'AffichageAll_President']);
-    Route::get('/president/enseignants/{id}', [EnseignantController::class, 'AffichagebyEtablissement_President']);  
-    Route::get('/interventions', [InterventionController::class, 'getAllInterventions_By_President']);
-    Route::get('/interventions/president/etablissement/{id_etablissement}', [InterventionController::class, 'getInterventionsByEtablissement_By_President']);
-    Route::get('/interventions/president/enseignant/{id_professeur}', [InterventionController::class, 'getInterventionsByenseignant_By_President']);
-    Route::get('/interventions/president/annee/{anneeUniversitaire}', [InterventionController::class, 'getInterventionsByAnnee_By_President']);
+    Route::get('/president/enseignants/{id}', [EnseignantController::class, 'AffichagebyEtablissement_President']);
+    Route::get('/president/interventions', [InterventionController::class, 'getAllInterventions_By_President']);
+    Route::get('/president/interventions/etablissement/{id_etablissement}', [InterventionController::class, 'getInterventionsByEtablissement_By_President']);
+    Route::get('/president/interventions/enseignant/{id_professeur}', [InterventionController::class, 'getInterventionsByenseignant_By_President']);
+    Route::get('/president/interventions/annee/{anneeUniversitaire}', [InterventionController::class, 'getInterventionsByAnnee_By_President']);
+    Route::put('/president/interventions/valider/{id}', [InterventionController::class, 'Valider_By_President']);
+    Route::put('/president/interventions/non_valider/{id}', [InterventionController::class, 'Non_Valider_By_President']);
 
 
 });
 // Routes nécessitant le rôle 'role_directeur'
 Route::middleware('check.role:role_directeur')->group(function () {
-   
+
     Route::post('/interventions/directeur', [InterventionController::class, 'getAllInterventions_By_Directeur']);
     Route::post('/interventions/directeur/professeur/{id_professeur}', [InterventionController::class, 'getInterventionsByProfesseur_By_Directeur']);
     Route::post('/interventions/directeur/annee/{anneeUniversitaire}', [InterventionController::class, 'getInterventionsByAnnee_By_Directeur']);
@@ -123,10 +137,11 @@ Route::middleware('check.role:role_directeur')->group(function () {
     // Route pour invalider une intervention par le directeur
     Route::put('/directeur/interventions/non_valider/{id}', [InterventionController::class, 'Non_Valider_By_Directeur']);
     // Ajoutez d'autres routes nécessitant le rôle 'role_president' ici...
+    
 });
 
 // Routes nécessitant le rôle 'role_admin_eta'
- Route::middleware('check.role:role_admin_eta')->group(function () {
+Route::middleware('check.role:role_admin_eta')->group(function () {
 
     Route::delete('/interventions/{id}', [InterventionController::class, 'destroy']);
     Route::post('/interventions/create', [InterventionController::class, 'store']);
@@ -134,26 +149,24 @@ Route::middleware('check.role:role_directeur')->group(function () {
     Route::get('/enseignants/{id}', [EnseignantController::class, 'show']);
     Route::delete('/enseignants/{id}', [EnseignantController::class, 'destroy']);
     Route::put('/interventions/edit/{id}', [InterventionController::class, 'update']);
-    Route::get('directeur/interventions', [InterventionController::class,'getAllInterventions_By_Administrateur']);
-    Route::get('directeur/interventions/annee/{anneeUniversitaire}',  [InterventionController::class,'getInterventionsByAnnee_By_Administrateur']);
-    Route::get('directeur/interventions/semestre/{anneeUniversitaire}/{semestre}', [InterventionController::class,'getInterventionsBySemestre_By_Administrateur']);
+    Route::get('directeur/interventions', [InterventionController::class, 'getAllInterventions_By_Administrateur']);
+    Route::get('directeur/interventions/annee/{anneeUniversitaire}', [InterventionController::class, 'getInterventionsByAnnee_By_Administrateur']);
+    Route::get('directeur/interventions/semestre/{anneeUniversitaire}/{semestre}', [InterventionController::class, 'getInterventionsBySemestre_By_Administrateur']);
 
 });
+
 
 // Routes nécessitant le rôle 'role_admin_univ'
- Route::middleware('check.role:role_admin_univ')->group(function () {
-    Route::post('/administrateurs/create', [AdministrateurController::class, 'store']);
-    Route::get('/administrateurs', [AdministrateurController::class, 'index']);
-Route::get('/administrateurs/{id}', [AdministrateurController::class, 'show']);
-Route::delete('/administrateurs/{id}', [AdministrateurController::class, 'destroy']); 
-Route::post('/register', [AuthController::class, 'register']);
-Route::get('enseignant/interventions/administrateur/{id_professeur}', [InterventionController::class,'getInterventionsByProfesseur_By_Administrateur']);
-    Route::get('administrateur/interventions', [InterventionController::class,'getAllInterventions_By_Administrateur']);
-    Route::get('administrateur/interventions/annee/{anneeUniversitaire}',  [InterventionController::class,'getInterventionsByAnnee_By_Administrateur']);
-    Route::get('administrateur/interventions/semestre/{anneeUniversitaire}/{semestre}', [InterventionController::class,'getInterventionsBySemestre_By_Administrateur']);
-   
+/* Route::middleware('check.role:role_admin_univ')->group(function () { */
 
-});
+    
+    Route::get('enseignant/interventions/administrateur/{id_professeur}', [InterventionController::class, 'getInterventionsByProfesseur_By_Administrateur']);
+    Route::get('administrateur/interventions', [InterventionController::class, 'getAllInterventions_By_Administrateur']);
+    Route::get('administrateur/interventions/annee/{anneeUniversitaire}', [InterventionController::class, 'getInterventionsByAnnee_By_Administrateur']);
+    Route::get('administrateur/interventions/semestre/{anneeUniversitaire}/{semestre}', [InterventionController::class, 'getInterventionsBySemestre_By_Administrateur']);
+
+
+/* }); */
 // Routes nécessitant le rôle 'role_enseignant'
 Route::middleware('check.role:role_enseignant')->group(function () {
     Route::get('enseignant/interventions/annee/{anneeUniversitaire}', [InterventionController::class, 'getInterventionsByAnnee_By_Enseignant']);

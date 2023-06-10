@@ -12,7 +12,7 @@ class PaiementController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
+    {   
         $payement = Paiement::all();
         return response()->json([
             'status_code' => 200,

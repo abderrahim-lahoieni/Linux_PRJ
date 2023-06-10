@@ -9,6 +9,7 @@ use App\Models\Enseignant;
 use Illuminate\Http\Request;
 use App\Models\PasswordReset;
 use App\Models\Administrateur;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -17,73 +18,61 @@ use App\Http\Requests\ForgotPasswordRequest;
 use App\Notifications\PasswordResetNotification;
 use Illuminate\Auth\Notifications\ResetPassword;
 
-//Controller for authenfication 
+//Controller for authenfication
 class AuthController extends Controller
 {
 
     public function register(Request $request)
     {
+        
+
+
+        if (!Gate::allows('role_admin_univ',Auth::user())) {
+            abort('403');
+            
+        }
+
         try {
-            //Validated
-            $validateUser = Validator::make(
-                $request->all(),
-                [
-                    'email' => 'required|email|unique:users,email',
-                    'password' => 'required',
-                    'type' => 'required'
-                ]
-            );
 
             //pour creer un president dans la table user
-            if (!Gate::allows('role_admin_univ')) {
-                abort('403');
-            }
-            try {
-                //Validated
-                $validateUser = Validator::make(
-                    $request->all(),
-                    [
-                        'email' => 'required|email|unique:users,email',
-                        'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
-                        'type' => 'required'
-                    ]
-                );
 
-                if ($validateUser->fails()) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'validation error',
-                        'errors' => $validateUser->errors()
-                    ], 401);
-                }
+            //Validated
+            $fields = $request->validate([
+                'email' => 'required | string | unique:users,email',
+                'password' => 'required | string|min:8 |confirmed',
+                'type' => 'required | string'
+            ]);
 
-                $user = User::create([
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                    'type' => $request->type
-                ]);
+            $user = User::create([
+                'email' => $fields['email'],
+                'password' => Hash::make($fields['password']),
+                'type' => $fields['type']
+            ]);
 
-                return response()->json([
-                    'status' => true,
-                    'message' => 'User Created Successfully',
-                    'token' => $user->createToken("API TOKEN")->plainTextToken
-                ], 200);
 
-            } catch (Exception $e) {
-                return response()->json([
-                    'status' => false,
-                    'message' => $e
-                ], 500);
-            }
+            $token =$user->createToken("myapptoken")->plainTextToken;
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User Created Successfully',
+                'token' => $token
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
+
 
     public function login(Request $request)
     {
         //Validate data coming from user
         $fields = $request->validate([
             'email' => 'required | email ',
-            'password' => 'required | string|min:8 '
+            'password' => 'required | string '
         ]);
 
         //Check email
@@ -123,18 +112,18 @@ class AuthController extends Controller
 
         $user = $user->where($query->qualifyColumn('email'), $request->input('email'))->first();
 
-        //if no such user exists then throw an error 
+        //if no such user exists then throw an error
         if (!$user || !$user->email) {
             return response()->error('No Record Found', 'Incorrect Email Address Provided', 404);
         }
 
-        //Generate a 4 digit random Token 
+        //Generate a 4 digit random Token
         $resetPasswordToken = str_pad(random_int(1, 9999), 4, '0', STR_PAD_RIGHT);
 
         //in case User has already requested for forgot password don't create another record
-        //Instead Update the existing token with the new token 
+        //Instead Update the existing token with the new token
         if (!$userPassReset = PasswordReset::where('email', $user->email)->first()) {
-            //Store Token in DB with Token Expiration Time i.e: 1 hour 
+            //Store Token in DB with Token Expiration Time i.e: 1 hour
             PasswordReset::create([
                 'email' => $user->email,
                 'token' => $resetPasswordToken
@@ -147,7 +136,7 @@ class AuthController extends Controller
             ]);
         }
 
-        //Send Notification to the user about the reset token 
+        //Send Notification to the user about the reset token
         $user->notify(
             new PasswordResetNotification(
                 $user,
@@ -159,7 +148,7 @@ class AuthController extends Controller
     public function reset(ResetPasswordRequest $request)
     {
 
-        //validate the request 
+        //validate the request
         $attributes = $request->validated();
 
         $user = User::where('email', $attributes['email'])->first();
@@ -175,7 +164,7 @@ class AuthController extends Controller
             return response()->error('An Error Occured Please try Again', 'Token Mistach', 400);
         }
 
-        //update User's Password 
+        //update User's Password
 
         $user->fill([
             'password' => Hash::make($attributes['password'])
@@ -183,12 +172,12 @@ class AuthController extends Controller
 
         $user->save();
 
-        //Dalete previous all Tokens 
+        //Dalete previous all Tokens
         $user->tokens()->delete();
 
         $resetRequest->delete();
 
-        //Get Token for Authenticated User 
+        //Get Token for Authenticated User
         $token = $user->createToken('authToken')->plainTextToken;
 
         //Create a Response

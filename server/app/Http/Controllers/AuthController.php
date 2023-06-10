@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ForgotPasswordRequest;
-use App\Http\Requests\ResetPasswordRequest;
 use Exception;
-use Illuminate\Auth\Notifications\ResetPassword;
+use App\Models\User;
+use App\Models\Grade;
+use App\Models\Enseignant;
 use Illuminate\Http\Request;
+use App\Models\PasswordReset;
+use App\Models\Administrateur;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Models\User;
-use App\Models\Enseignant;
-use App\Models\Administrateur;
-use App\Models\Grade;
-use App\Models\PasswordReset;
+use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Notifications\PasswordResetNotification;
+use Illuminate\Auth\Notifications\ResetPassword;
+
 //Controller for authenfication 
 class AuthController extends Controller
 {
 
     public function register(Request $request)
-<<<<<<< HEAD
     {
         try {
             //Validated
@@ -32,47 +33,48 @@ class AuthController extends Controller
                     'type' => 'required'
                 ]
             );
-=======
-    {  
-        //pour creer un president dans la table user
-         if(!Gate::allows('role_admin_univ')) {
-        abort('403');
-       }
-        try {
-            //Validated
-            $validateUser = Validator::make($request->all(), 
-            [
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
-                'type' => 'required'
-            ]);
->>>>>>> 8a44fd8bc024227dd468fd39dd2dd2f5cfd1b1e6
 
-            if ($validateUser->fails()) {
+            //pour creer un president dans la table user
+            if (!Gate::allows('role_admin_univ')) {
+                abort('403');
+            }
+            try {
+                //Validated
+                $validateUser = Validator::make(
+                    $request->all(),
+                    [
+                        'email' => 'required|email|unique:users,email',
+                        'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
+                        'type' => 'required'
+                    ]
+                );
+
+                if ($validateUser->fails()) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'validation error',
+                        'errors' => $validateUser->errors()
+                    ], 401);
+                }
+
+                $user = User::create([
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'type' => $request->type
+                ]);
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'User Created Successfully',
+                    'token' => $user->createToken("API TOKEN")->plainTextToken
+                ], 200);
+
+            } catch (Exception $e) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'validation error',
-                    'errors' => $validateUser->errors()
-                ], 401);
+                    'message' => $e
+                ], 500);
             }
-
-            $user = User::create([
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'type' => $request->type
-            ]);
-
-            return response()->json([
-                'status' => true,
-                'message' => 'User Created Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
-            ], 200);
-
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e
-            ], 500);
         }
     }
 
@@ -115,7 +117,7 @@ class AuthController extends Controller
         ];
     }
 
-    public function forgotPassword(ForgotPasswordRequest $request)
+    /* public function forgotPassword(ForgotPasswordRequest $request)
     {
         $user = ($query = User::query());
 
@@ -134,13 +136,13 @@ class AuthController extends Controller
         if (!$userPassReset = PasswordReset::where('email', $user->email)->first()) {
             //Store Token in DB with Token Expiration Time i.e: 1 hour 
             PasswordReset::create([
-                'email' => $user->email ,
+                'email' => $user->email,
                 'token' => $resetPasswordToken
             ]);
-        }else{
+        } else {
             //Store Token in DB with Token Expiration Time i.e: 1 hour
             $userPassReset->update([
-                'email' => $user->email ,
+                'email' => $user->email,
                 'token' => $resetPasswordToken
             ]);
         }
@@ -152,25 +154,25 @@ class AuthController extends Controller
                 $resetPasswordToken
             )
         );
-    }
+    } */
 
-    public function reset(ResetPasswordRequest $request){
+    public function reset(ResetPasswordRequest $request)
+    {
 
         //validate the request 
         $attributes = $request->validated();
 
-        $user = User::where('email',$attributes['email'])->first();
+        $user = User::where('email', $attributes['email'])->first();
 
         //Throw exception if user is not found
-        if(!$user)
-        {
-            return response()->error('No Record Found','Incorrect Email Address Provided',404);
+        if (!$user) {
+            return response()->error('No Record Found', 'Incorrect Email Address Provided', 404);
         }
 
-        $resetRequest = PasswordReset::where('email',$user->email)->first();
+        $resetRequest = PasswordReset::where('email', $user->email)->first();
 
-        if(!$resetRequest || $resetRequest->token != $request->token){
-            return response()->error('An Error Occured Please try Again','Token Mistach',400);
+        if (!$resetRequest || $resetRequest->token != $request->token) {
+            return response()->error('An Error Occured Please try Again', 'Token Mistach', 400);
         }
 
         //update User's Password 
@@ -193,7 +195,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => 'Password Reset Success',
             'user' => $user,
-            'token' => $token  
+            'token' => $token
         ]);
     }
 }

@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Administrateur;
+use Exception;
+use App\Models\User;
 use App\Models\Grade;
 use App\Models\Enseignant;
-use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Administrateur;
+use App\Models\Etablissement;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\EditEtablissementRequest;
-use Exception;
 
 class EnseignantController extends Controller
 {
@@ -186,8 +188,8 @@ class EnseignantController extends Controller
         if(!Gate::allows('role_enseignant')) {
             abort('403');
            }
-        $Enseignant=Auth::id();
-        $Enseignant1=Enseignant::where('id',$Enseignant)->first();
+        $Ens=Auth::id();
+        $Enseignant=Enseignant::where('id',$Ens)->first();
 
         $fields = $request->validate([
             'nom' => 'required|string',
@@ -228,6 +230,7 @@ class EnseignantController extends Controller
 
         return response()->json(['message' => 'Informations personnelles de l\'enseignant mises à jour avec succès'], 200);
     }
+
     public function changer_etablissement(Request $request, $id)
     {    if(!Gate::allows('role_admin_univ')) {
         abort('403');
@@ -238,7 +241,7 @@ class EnseignantController extends Controller
             'nom' => 'required | string',
             'ville' => 'required | string',
         ]);
-        $etablissement=Etablissement::where('nom',$required['nom'])->where('ville',$required['ville'])->first();
+        $etablissement=Etablissement::where('nom',$fields['nom'])->where('ville',$fields['ville'])->first();
         $enseignant = Enseignant::findOrFail($id);
         $enseignant->etablissement = $etablissement->id;
         

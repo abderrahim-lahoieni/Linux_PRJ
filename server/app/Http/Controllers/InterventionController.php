@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Enseignant;
 use App\Models\Intervention;
+use Illuminate\Http\Request;
 use App\Models\Etablissement;
 use App\Models\Administrateur;
-use App\Models\Enseignant;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class InterventionController extends Controller
 {
@@ -356,16 +357,12 @@ class InterventionController extends Controller
     }
 
     public function update(Request $request, $id)
-<<<<<<< HEAD
     {   
         if(!Gate::allows('role_admin_eta')) {
             abort('403');
            }
-        $intervention =Intervention::find($id); 
-=======
-    {
+    
         $intervention = Intervention::find($id);
->>>>>>> ceab9a1c039aa975c5f127b3a5d686d327273733
         $data = $request->validate([
             'intitule_intervention' => 'required | string',
             'annee_univ' => 'required | string',

@@ -21,6 +21,13 @@ class GradeController extends Controller
             ]);
        
     }
+    public  function getgrade($ppr){
+       $enseignant=Enseignant::where('ppr',$ppr);
+       $id_grade=$enseignant->id_grade;
+       $grade=Grade::where('id',$id_grade)->first();
+       $designation=$grade->designation;
+       return $designation;
+    }
 
     /**
      * Show the form for creating a new resource.

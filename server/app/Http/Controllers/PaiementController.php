@@ -8,75 +8,96 @@ use Exception;
 
 class PaiementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    
+    public function Afichage_Mon_Payement($Annee)
     {   
-        $payement = Paiement::all();
-        return response()->json([
-            'status_code' => 200,
-            'status_message' => 'Les paiements ont été récupérées avec succès',
-            'items' => $payement
-        ]);
+        if (Gate::allows('role_enseignant', Auth::user())){
+        $id_user=Auth::id();
+        $Enseignant=Enseignant::where('id_user',$id_user)->first();
+        
+        $payement=Payement::where('id_intervenant',$Enseignant->id)
+        ->where('Anee_univ',$Annee)
+        ->get(['VH','Taux_H','Brut','IR','Net','Anee_univ','semestre']);
+        return  $payement;
     }
+else{
+    abort('403');
+}}
+    public function Calcule_Mon_Salaire($Annee){
+        if (Gate::allows('role_enseignant', Auth::user())){
+       $heures=0;
+       $salaire_annuelle=0;
+       $salaire_heures_supplémentaire=0;
+       $salaire_vacation=0;
+       $total=0;
+       $id_user=Auth::id();
+       $Enseignant=Enseignant::where('id_user',$id_user)->first();
+       $id_grade=$Enseignant->id_grade;
+    $grade=Grade::where('id',$id_grade)->first();
+    $charge_statutaire=$grade->charge_statutaire;
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $payement=Payement::where('id_intervenant',$enseignant)
+        ->where('Anee_univ',$Anne)
+        ->get(['VH','Taux_H','Brut','IR','Net','Anee_univ','semestre']);
+        foreach($payement as $pay){
+            $heures+=$pay->VH;
+            if($heures<=200+$charge_statutaire){
+                if($pay->id_etab == $Enseignant->Etablissement){
+                    if($pay->VH<$charge_statutaire){
+                        $salaire_annuelle+=$pay->net;
+                        $total+=$salaire_annuelle;
+                    }else{
+                        $salaire_vacation+=$pay->net;
+                        $total+=$salaire_vacation;
+                    }
+                }else{
+                    $salaire_heures_supplémentaire+=$pay->net;
+                    $total+=$salaire_heures_supplémentaire;
+                }
+            }
+
+        }}
     }
+        public function Calcule_Salaire_Enseignant($ppr,$Annee){
+            if (Gate::allows('role_president', Auth::user())){
+            $heures=0;
+            $salaire_annuelle=0;
+            $salaire_heures_supplémentaire=0;
+            $salaire_vacation=0;
+            $total=0;
+            
+            $Enseignant=Enseignant::where('ppr',$ppr)->first();
+            $id_grade=$Enseignant->id_grade;
+         $grade=Grade::where('id',$id_grade)->first();
+         $charge_statutaire=$grade->charge_statutaire;
+     
+             $payement=Payement::where('id_intervenant',$enseignant)
+             ->where('Anee_univ',$Anne)
+             ->get(['VH','Taux_H','Brut','IR','Net','Anee_univ','semestre']);
+             foreach($payement as $pay){
+                $heures+=$pay->VH;
+                 if($heures<=200+$charge_statutaire){
+                     if($pay->id_etab == $Enseignant->Etablissement){
+                         if($pay->VH<$charge_statutaire){
+                             $salaire_annuelle+=$pay->net;
+                             $total+=$salaire_annuelle;
+                         }else{
+                             $salaire_vacation+=$pay->net;
+                             $total+=$salaire_vacation;
+                         }
+                     }else{
+                         $salaire_heures_supplémentaire+=$pay->net;
+                         $total+=$salaire_heures_supplémentaire;
+                     }
+                 }
+                 
+             }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    }else{
+        abort('403');
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Paiement $paiement)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Paiement $paiement)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Paiement $paiement)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        try{
-            $paiement =Paiement::findOrfail($id);
-            $paiement->delete();
-            return response()->json([
-            'status_code' => 200,
-            'status_message' => 'Le paiement désiré est supprimée avec succès'
-            ]);
-
-        }catch(Exception $e){
-            return response()->json($e);
-        }
-    }
+}
+    
+   
 }
 

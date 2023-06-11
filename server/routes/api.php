@@ -29,16 +29,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 
+//grade
+Route::get('/president/enseignant/grade/{ppr}', [GradeController::class, 'get_grade']);
+Route::get('/directeur/enseignant/grade/{ppr}', [GradeController::class, 'get_grade']);
+Route::get('/Administrateur/enseignant/grade/{ppr}', [GradeController::class, 'get_grade']);
 
 
 
 
 
-
-
-//-------Paiement---------
-Route::get('/paiements', [PaiementController::class, 'index']);
-Route::delete('/paiements/{id}', [PaiementController::class, 'destroy']);
 
 
 
@@ -104,6 +103,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('administrateur/enseignants', [EnseignantController::class, 'index']);
     Route::get('/directeur/enseignants', [EnseignantController::class, 'Affichage_Administrateur']);
     Route::get('/administrateur/enseignants', [EnseignantController::class, 'Affichage_Administrateur']);
+
+    //payement
+Route::get('/enseignant/payement/{Annee}', [GradeController::class, 'Affichage_Mon_Payemet']);
+Route::get('/president/payement/{ppr}/{Annee}', [GradeController::class, 'Calcule_Salaire_Enseignant']);
 
 });
 

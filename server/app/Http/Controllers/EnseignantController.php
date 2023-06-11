@@ -17,14 +17,14 @@ class EnseignantController extends Controller
 {
 
     public function index()
-    {
-        $enseignant = Enseignant::all();
+    {   if (Gate::any(['role_admin_eta', 'role_directeur', 'role_president'], Auth::user())) {
+        $enseignant = Enseignant::get(['ppr','nom','prenom']);
         return response()->json([
             'status_code' => 200,
             'items' => $enseignant
         ]);
     }
-
+    }
 
     //affichage des informations
     public function show($id)

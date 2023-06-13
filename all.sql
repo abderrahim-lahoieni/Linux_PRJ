@@ -244,13 +244,14 @@ RETURNS TRIGGER AS $$
 DECLARE
     user_count INTEGER;
 BEGIN
-    
+    if old.id_user <>new.id_user 
+    then 
         SELECT COUNT(*) INTO user_count FROM enseignant WHERE id_User = NEW.id_User;
         
         IF user_count > 0 THEN
             RAISE EXCEPTION 'mot de passe et email déjà utilisés';
         END IF;
-    
+    END IF;
 
     RETURN NEW;
 END;

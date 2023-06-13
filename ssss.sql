@@ -24,17 +24,16 @@ Nom             varchar(200)  not null,
 prenom          varchar(200) not null,
 Date_Naissance  date,
 Etablissement   INTEGER references etablissements(id) ,
-id_Grade        INTEGER references grades(id_Grade) ,
-id_User         Integer references users(id_User)
+id_Grade        INTEGER references grades(id) ,
+id_User         Integer references users(id)
 
 );
 
 -----modification table enseignant
 ALTER TABLE enseignants
-ADD COLUMN etat INTEGER DEFAULT 1 CHECK (etat IN (0, 1));
+ADD COLUMN etat boolean DEFAULT true ;
 -----pardefaut 0
-ALTER TABLE enseignants
-ALTER COLUMN etat SET DEFAULT 1;
+
 
 create table users(
 id    INTEGER  primary key not null  ,
@@ -108,10 +107,16 @@ PPR             varchar(100)  not null Unique,
 Nom             varchar(200)  not null,
 prenom          varchar(200) not null,
 Etablissement   INTEGER references etablissements(id) ,
-id_User         Integer references users(id_User)
+id_User         Integer references users(id)
 );
 
-
+----------
+------------NUll-----
+ALTER TABLE enseignants
+ALTER COLUMN id_User DROP NOT NULL;
+----------------
+ALTER TABLE administrateurs
+ALTER COLUMN id_User DROP NOT NULL;
 
 
 ------------------peuplement----

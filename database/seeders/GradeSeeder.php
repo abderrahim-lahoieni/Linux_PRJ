@@ -16,22 +16,22 @@ class GradeSeeder extends Seeder
         Grade::factory(10)->create();
         
         // Exemple d'insertion de grades
-        Grade::create([
-            'designation' => 'PA',
-            'charge_statutaire' => 240,
-            'taux_horaire_vacation' =>440,
-        ]);
+        // Grade::create([
+        //     'designation' => 'PA',
+        //     'charge_statutaire' => 240,
+        //     'taux_horaire_vacation' =>300,
+        // ]);
 
-        Grade::create([
-            'designation' => 'PH',
-            'charge_statutaire' => 200,
-            'taux_horaire_vacation' => 400,
-        ]);
-        Grade::create([
-            'designation' => 'PES',
-            'charge_statutaire' => 190,
-            'taux_horaire_vacation' => 390,
-        ]);
+        // Grade::create([
+        //     'designation' => 'PH',
+        //     'charge_statutaire' => 200,
+        //     'taux_horaire_vacation' => 400,
+        // ]);
+        // Grade::create([
+        //     'designation' => 'PES',
+        //     'charge_statutaire' => 190,
+        //     'taux_horaire_vacation' => 500,
+        // ]);
         //Peuplement de Hajar
         Grade::create([
             'designation' => 'PA',

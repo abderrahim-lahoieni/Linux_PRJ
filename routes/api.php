@@ -110,13 +110,20 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/administrateur_etb/enseignants', [EnseignantController::class, 'Affichage_Administrateur']);
 
     Route::get('/administrateur_etb/directeur', [AdministrateurController::class, 'AfficherDirecteur']);
-
+    
+    Route::get('/administrateur_univ/president',[AdministrateurController::class, 'AfficherPresident']);
     Route::get('/enseignant/paiement/{Annee}', [PaiementController::class, 'Afichage_Mon_Payement']);
 
-    Route::get('/enseignant/Calcul_Salaire/{Annee}', [PaiementController::class, 'Calculer_Mon_Salaire']);
+    //Route::get('/enseignant/Calcul_Salaire/{Annee}', [PaiementController::class, 'Calculer_Mon_Salaire']);
+    Route::get('/enseignant/paiement/Total/{Annee}',[PaiementController::class , 'Afficher_salaire_Total']);
 
+    //Salaire supplementaire de l'enseignant
+    Route::get('/enseignant/paiement/Total_Supplementaire/{Annee}',[PaiementController::class , 'Afficher_Salaire_Sup']);
 
+    //Salaire vacataire de l'enseignant
+    Route::get('/enseignant/paiement/Total_Vacataire/{Annee}',[PaiementController::class , 'Afficher_Salaire_Vacataire']);
 
+    
 
 
     // Route pour valider une intervention par le président
@@ -135,9 +142,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/president/interventions/non_valider/{id}', [InterventionController::class, 'Non_Valider_By_President']);
 
 
-
-
-
+    
     Route::post('/interventions/directeur', [InterventionController::class, 'getAllInterventions_By_Directeur']);
     Route::post('/interventions/directeur/professeur/{id_professeur}', [InterventionController::class, 'getInterventionsByProfesseur_By_Directeur']);
     Route::post('/interventions/directeur/annee/{anneeUniversitaire}', [InterventionController::class, 'getInterventionsByAnnee_By_Directeur']);

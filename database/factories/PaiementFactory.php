@@ -23,9 +23,9 @@ class PaiementFactory extends Factory
         return [
             'vh' => fake()->numberBetween(10,100), // vh : Volume horaire
             'taux_h' => fake()->numberBetween(100,250), //taux_h : taux horaire
-            'brut' => fake()->randomFloat($nbMaxDecimals = 3, $min = 0, $max = 9000),
-            'ir' => fake()->randomFloat($nbMaxDecimals = 3, $min = 1, $max = 30), // ir = Impot sur le revenu
-            'net' =>fake()->randomFloat($nbMaxDecimals = 3, $min = 0, $max = 9000),
+            'brut' => fake()->numberBetween(1000,2300),
+            'ir' => fake()->numberBetween(10,30), // ir = Impot sur le revenu
+            'net' =>fake()->numberBetween(2000,3000),
             'annee_univ' =>fake()->year($max = 'now') ,
             'semestre' => fake()->numerify('S#'),
             'id_intervenant' => Enseignant::inRandomOrder()->first()->id,

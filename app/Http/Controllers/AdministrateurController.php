@@ -289,23 +289,40 @@ class AdministrateurController extends Controller
         }
     }
 
-    public function AfficherDirecteur(){
+    public function AfficherDirecteur()
+    {
 
-        if (Gate::allows('role_admin_eta', Auth::user())){
-            
+        if (Gate::allows('role_admin_eta', Auth::user())) {
+
             $id_admin = Auth::id();
-            $admin = Administrateur::where('id_user',$id_admin);
-            $etab = Etablissement::where('id',$admin->etablissement)->first();
+            $admin = Administrateur::where('id_user', $id_admin);
+            $etab = Etablissement::where('id', $admin->etablissement)->first();
             $id_etab = $etab->id;
-            $directeur = Administrateur::where(' etablissement' , $id_etab)->where('id_user','<>',$id_admin);
-            
+            $directeur = Administrateur::where(' etablissement', $id_etab)->where('id_user', '<>', $id_admin);
+
             return response()->json([
                 'status_code' => 200,
                 'directeur' => $directeur
             ]);
 
         }
-        
+
     }
+
+    public function AfficherPresident()
+    {
+
+        if (Gate::allows('role_admin_univ', Auth::user())) {
+            $president = User::where('type', 'PRESIDENT')->first();
+
+            return response()->json([
+                'status_code' => 200,
+                'president' => $president
+            ]);
+
+        }
+    }
+
+
 
 }

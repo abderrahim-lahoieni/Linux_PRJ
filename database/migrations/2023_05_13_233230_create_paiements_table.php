@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->integer('vh'); //Volume horaire 
             $table->integer('taux_h');//Taux Horaire
-            $table->float('brut');
-            $table->float('ir');//impot sur le revenue
-            $table->float('net');
+            $table->integer('brut');
+            $table->integer('ir');//impot sur le revenue
+            $table->integer('net');
             $table->integer('annee_univ');
             $table->char('semestre',2);
             $table->unsignedBigInteger('id_intervenant');

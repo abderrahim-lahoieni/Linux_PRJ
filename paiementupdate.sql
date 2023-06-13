@@ -51,7 +51,6 @@ WHERE id = existing_paiement.id;
                 WHERE id_Intervenant = NEW.id_Intervenant
                 AND id_Etab = NEW.id_Etab
                 AND Annee_univ = NEW.Annee_univ
-                AND Semestre = NEW.Semestre
                 and visa_uae=true;
 
                 IF total_hours > grade_info.charge_statutaire THEN

@@ -18,12 +18,10 @@ class EnseignantController extends Controller
 
     public function index()
     {
-        if (Gate::allows('role_president', Auth::user())) {
+        if (Gate::allows('role_admin_univ', Auth::user())) {
 
             $enseignant = Enseignant::all();
-            foreach ($enseignant as $etab){
-                $etab = 
-            }
+            
             return response()->json([
                 'status_code' => 200,
                 'items' => $enseignant

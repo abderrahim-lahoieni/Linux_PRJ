@@ -51,6 +51,13 @@ class EtablissementController extends Controller
         ]);
     }
 
+    public function getEtab($id){
+        $etab = Etablissement::where("id" , $id)->first();
+        return response()->json([
+            'status_code' => 200 ,
+            'items' => $etab->nom
+        ]);
+    }
     /**
      * Show the form for creating a new resource.
      */

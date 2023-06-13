@@ -26,7 +26,7 @@ DECLARE
 BEGIN
      
         SELECT id_User INTO id_u FROM Administrateur WHERE id = old.id;
-        DELETE FROM users WHERE id_User = id_u;
+        DELETE FROM users WHERE id_user = id_u;
     
     
     RETURN NEW;

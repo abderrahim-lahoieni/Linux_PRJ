@@ -17,6 +17,8 @@ after UPDATE ON enseignant
 FOR EACH ROW
 EXECUTE FUNCTION free_a_user();
 --------------------------------
+------------------------
+
 CREATE OR REPLACE FUNCTION free_a_administratory()
 RETURNS TRIGGER AS $$
 DECLARE

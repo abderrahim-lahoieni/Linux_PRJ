@@ -11,7 +11,7 @@ ALTER COLUMN Nbr_enseignants SET DEFAULT 0;
 ALTER COLUMN Ville SET DEFAULT 'TANGER';
 ------Grade---------
 create table grades(
-id_Grade    INTEGER  primary key not null ,
+id    INTEGER  primary key not null ,
 designation varchar(100) not null,
 charge_statutaire INTEGER ,
 Taux_horaire_vacation INTEGER );
@@ -37,14 +37,14 @@ ALTER TABLE enseignants
 ALTER COLUMN etat SET DEFAULT 1;
 
 create table users(
-id_User    INTEGER  primary key not null  ,
+id    INTEGER  primary key not null  ,
 email      varchar(100) not null Unique,
 password   varchar(100) not null ,
 Type        varchar(30) not null);
 ----------------------INTEVENTION---
 
 create table interventions(
-id_Intervention    INTEGER  primary key not null  ,
+id    INTEGER  primary key not null  ,
 id_Intervenant     INTEGER  references enseignants (id),
 id_Etab            INTEGER references etablissements(id) ,
 Intitule_intervention varchar(30) ,
